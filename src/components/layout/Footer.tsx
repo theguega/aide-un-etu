@@ -8,7 +8,7 @@ export function Footer() {
   return (
     // -- ACCESSIBILITÉ: La balise <footer> est un landmark de fin de page --
     <footer className="bg-white text-black border-t border-[color:var(--border)] mt-16">
-      <div className="container mx-auto px-4 py-8">
+      <div className="mx-auto px-8 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
           <p className="text-sm">
             © {currentYear} Aide-un-étudiant. Un projet pour le Hackathon UTC x

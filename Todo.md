@@ -2,18 +2,18 @@
 
 ## Front
 
-- [ ] Home
-  - [ ] Description du site
-  - [ ] Row (colum sur téléphone) avec 3 Cards : Objets, Services, Connaissances
-  - [ ] Footer avec les CGG et crédits ?
-- [ ] Créer un compte
-- [ ] Log in
-- [ ] Section Objets
-- [ ] Section Services
-- [ ] Section Connaissances
-- [ ] Créer la page template de quand on clique sur une offre
+- [X] Home
+  - [X] Description du site
+  - [X] Row (colum sur téléphone) avec 3 Cards : Objets, Services, Connaissances
+  - [X] Footer avec les CGG et crédits ?
+- [X] Créer un compte
+- [X] Log in
+- [X] Section Objets
+- [X] Section Services
+- [X] Section Connaissances
+- [X] Créer la page template de quand on clique sur une offre
 - [ ] Adapter le site en fonction de si on est co (peut proposer une offre, offres filtrées en fonction de sa position), et pas co (on voit toutes les offres et peut filtrer par position)
-- [ ] Créer le form qui sera utilisé pour faire une offre
+- [X] Créer le form qui sera utilisé pour faire une offre
 
 _Voir sur chaque section objets, services et connaissances de si on filtre par string ou si on impose avec de stags pré-faits_
 
@@ -53,7 +53,7 @@ Ou alors type d'étude : bac pro, commerce, école d'ingé, médecine....
 
 ## Accessibilité
 
-- [ ] RGPD à la création du compte
+- [X] RGPD à la création du compte
 - [ ] Supprimer les données non utilisées
   - [ ] ```Définir des dates d’expiration sur les données (fichiers, entrées en base de données...) permettant par la suite d’archiver et/ou de supprimer ces données. Mettre en place un processus (de préférence automatique) d’archivage ou de suppression des données (fichiers, entrées en base de données...) dont la durée de conservation est dépassée.```
 - [ ] Appli responsive

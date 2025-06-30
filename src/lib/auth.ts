@@ -1,8 +1,8 @@
 // src/lib/auth.ts
 import NextAuth from "next-auth"
 import type { NextAuthOptions } from "next-auth"
+import { prisma } from "./prisma"
 
-// Configuration du provider personnalisé
 export const authOptions: NextAuthOptions = {
   providers: [
     {
@@ -24,53 +24,69 @@ export const authOptions: NextAuthOptions = {
       userinfo: {
         url: process.env.OAUTH_RESOURCE_OWNER_DETAILS_URL!,
       },
-      profile(profile) {
+      profile(profile) {        
         if (profile.deleted_at != null || profile.active != 1) {
           throw new Error("Compte supprimé ou désactivé")
         }
-
+        
         return {
           id: profile.id?.toString() || profile.email,
           email: profile.email,
           name: profile.firstName + " " + profile.lastName,
         }
       },
-      style: {
-        //logo: "/logo-etudiant.svg", 
-        //logoDark: "/logo-etudiant-dark.svg",
-        bg: "#3B82F6",
-        text: "#FFFFFF",
-        bgDark: "#1E40AF",
-        textDark: "#FFFFFF"
-      }
     }
   ],
-  pages: {
-    signIn: "/auth/signin",
-    error: "/auth/error",
-  },
+  
   callbacks: {
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile, user }) {
+      console.log("JWT CALLBACK CALLED", { token, account, profile, user });
+      
       if (account && profile) {
-        token.accessToken = account.access_token
-        token.refreshToken = account.refresh_token
-        token.provider = (profile as any).provider
-        token.alumniOrExte = (profile as any).provider !== "cas"
+        token.email = (profile as any).email;
+        token.name = (profile as any).name;
+        token.id = (profile as any).id;
+        console.log("JWT CALLBACK PROFILE", profile);
       }
+      
       return token
     },
+    
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string
-      session.user.provider = token.provider as string
-      session.user.alumniOrExte = token.alumniOrExte as boolean
+      console.log("SESSION CALLBACK CALLED", { session, token });
+      
+      if (token) {
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.id = token.id as string;
+      }
+      
+      console.log("SESSION CALLBACK RESULT", session);
       return session
     },
+    
     async signIn({ user, account, profile }) {
+      console.log("SIGNIN CALLBACK CALLED", { user, account, profile })
+
       try {
         if (!user.email) {
+          console.log("No email found")
           return false
         }
-        
+
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
+        })
+
+        if (!existingUser) {
+          console.log("User not found, redirecting to complete-profile")
+
+          const email = encodeURIComponent(user.email)
+          const pseudo = encodeURIComponent(user.name || "")
+          return `/complete-profile?mail=${email}&pseudo=${pseudo}`
+        }
+
+        console.log("User found, allowing sign in")
         return true
       } catch (error) {
         console.error("Erreur lors de la connexion:", error)
@@ -78,20 +94,30 @@ export const authOptions: NextAuthOptions = {
       }
     }
   },
+  
   session: {
     strategy: "jwt",
     maxAge: 60 * 60,
   },
+  
   jwt: {
-    maxAge: 60 * 60, 
+    maxAge: 60 * 60,
   },
-  /*debug: process.env.NODE_ENV === "development",
+  
+  // Activer le debug pour voir les logs
+  debug: process.env.NODE_ENV === "development",
+  
   logger: {
     error: (code, metadata) => {
-      // Log minimal pour réduire l'impact
       console.error(`Auth Error ${code}:`, metadata)
     },
-  },*/
+    warn: (code) => {
+      console.warn(`Auth Warning ${code}`)
+    },
+    debug: (code, metadata) => {
+      console.log(`Auth Debug ${code}:`, metadata)
+    }
+  }
 }
 
 export default NextAuth(authOptions)

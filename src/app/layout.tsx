@@ -71,13 +71,6 @@ export default function RootLayout({
           
           <Footer/>
         </SessionProvider>
-
-        {/* Indicateur de performance pour développement */}
-        {process.env.NODE_ENV === "development" && (
-          <div className="fixed bottom-4 right-4 bg-green-100 text-green-800 px-3 py-1 rounded text-xs">
-            Mode éco-développement
-          </div>
-        )}
       </body>
     </html>
   )

@@ -26,7 +26,7 @@ Suivez ces étapes pour configurer l'environnement de développement sur votre m
 ### 1. Cloner le Dépôt
 
 ```bash
-git clone <URL_DU_REPO>
+git clone https://gitlab.utc.fr/mdelmaer/hackathon.git
 cd hackathon-utc-mc2i
 ```
 

@@ -12,18 +12,23 @@ export async function Header() {
     // -- ACCESSIBILITÉ: La balise <header> est un "landmark" (point de repère) majeur --
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex flex-col items-start py-4 gap-2">
           {/* Logo / Nom du site */}
-          <Link
-            href="/"
-            className="text-2xl font-bold text-gray-800"
-            aria-label="Retour à la page d'accueil de Aide-un-étudiant"
-          >
-            Aide-un-étudiant
-          </Link>
+          <div className="w-full flex items-center justify-center">
+            <Link
+              href="/"
+              className="text-4xl font-bold text-gray-800"
+              aria-label="Retour à la page d'accueil de Aide-un-étudiant"
+            >
+              Aide-un-étudiant
+            </Link>
+          </div>
 
           {/* -- ACCESSIBILITÉ: La balise <nav> est le landmark pour la navigation principale -- */}
-          <nav aria-label="Navigation principale">
+          <nav
+            aria-label="Navigation principale"
+            className="w-full flex justify-center"
+          >
             {/* -- ACCESSIBILITÉ: Une liste est la structure sémantique correcte pour un menu -- */}
             <ul className="flex items-center gap-6">
               <li>

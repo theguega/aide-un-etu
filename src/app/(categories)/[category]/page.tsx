@@ -38,10 +38,9 @@ const categoryMap = {
   },
 };
 
-export default async function CategoryPage({
-  params,
-  searchParams,
-}: CategoryPageProps) {
+export default async function CategoryPage(props: CategoryPageProps) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
   const categorySlug = params.category;
   const categoryInfo = categoryMap[categorySlug as keyof typeof categoryMap];
 

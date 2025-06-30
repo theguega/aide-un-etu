@@ -24,14 +24,14 @@ export function FilterBar() {
   );
 
   return (
-    <form className="flex flex-wrap gap-4 items-end bg-gray-50 p-4 rounded-lg">
+    <form className="flex flex-wrap gap-4 items-end bg-white border border-[color:var(--border)] p-4 rounded-lg">
       <fieldset className="flex flex-wrap gap-4">
         <legend className="sr-only">Filtres de recherche</legend>
 
         <div>
           <label
             htmlFor="postalCode"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-black mb-1"
           >
             Code postal
           </label>
@@ -40,7 +40,7 @@ export function FilterBar() {
             id="postalCode"
             name="postalCode"
             placeholder="75001"
-            className="p-2 border rounded-md"
+            className="p-2 border border-[color:var(--border)] rounded-md text-black bg-white focus:ring-2 focus:ring-[color:var(--accent)] focus:outline-none"
             onChange={(e) => handleFilterChange(e.target.value, "postalCode")}
             defaultValue={searchParams.get("postalCode")?.toString()}
           />
@@ -49,7 +49,7 @@ export function FilterBar() {
         <div>
           <label
             htmlFor="tags"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-black mb-1"
           >
             Tags (ex: bricolage, cours)
           </label>
@@ -58,7 +58,7 @@ export function FilterBar() {
             id="tags"
             name="tags"
             placeholder="bricolage,..."
-            className="p-2 border rounded-md"
+            className="p-2 border border-[color:var(--border)] rounded-md text-black bg-white focus:ring-2 focus:ring-[color:var(--accent)] focus:outline-none"
             onChange={(e) => handleFilterChange(e.target.value, "tags")}
             defaultValue={searchParams.get("tags")?.toString()}
           />

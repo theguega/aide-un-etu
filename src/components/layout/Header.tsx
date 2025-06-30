@@ -10,14 +10,14 @@ export async function Header() {
 
   return (
     // -- ACCESSIBILITÉ: La balise <header> est un "landmark" (point de repère) majeur --
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <header className="bg-white border-b border-[color:var(--border)] sticky top-0 z-10">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-start py-4 gap-2">
           {/* Logo / Nom du site */}
           <div className="w-full flex items-center justify-center">
             <Link
               href="/"
-              className="text-4xl font-bold text-gray-800"
+              className="text-4xl font-bold text-black"
               aria-label="Retour à la page d'accueil de Aide-un-étudiant"
             >
               Aide-un-étudiant
@@ -34,7 +34,7 @@ export async function Header() {
               <li>
                 <Link
                   href="/creer-offre"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-black hover:text-[color:var(--accent)] focus:text-[color:var(--accent)] transition-colors"
                 >
                   Créer une offre
                 </Link>
@@ -45,16 +45,14 @@ export async function Header() {
                 {session ? (
                   <div className="flex items-center gap-4">
                     <span>{/* Bonjour, {session.user?.name} */}</span>
-                    <button
-                      /* onClick={() => signOut()} */ className="bg-red-500 text-white px-4 py-2 rounded-md"
-                    >
+                    <button className="bg-[color:var(--accent)] text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]">
                       Déconnexion
                     </button>
                   </div>
                 ) : (
                   <Link
                     href="/api/auth/signin"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                    className="bg-[color:var(--accent)] text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] transition-colors"
                   >
                     Connexion
                   </Link>

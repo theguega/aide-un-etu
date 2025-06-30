@@ -28,34 +28,33 @@ export function OfferCard({ offer }: OfferCardProps) {
     // Une seule cible de tabulation, et pré-chargement par Next.js.
     <Link
       href={offerUrl}
-      className="group flex flex-col h-full bg-white border border-gray-200 rounded-lg p-5 transition-shadow duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      className="group flex flex-col h-full bg-white border border-[color:var(--border)] rounded-lg p-5 transition-shadow duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] focus:ring-offset-2"
     >
       <header className="mb-3">
         {/* -- ACCESSIBILITÉ : Le titre est un <h3>, car il est hiérarchiquement sous le <h1> de la page ("Objets à prêter") */}
-        <h3 className="text-xl font-bold text-gray-900 group-hover:underline">
+        <h3 className="text-xl font-bold text-black group-hover:underline">
           {offer.title}
         </h3>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-black mt-1">
           {offer.city}, {offer.postalCode}
         </p>
       </header>
 
       {/* On utilise flex-grow pour que la description prenne l'espace disponible, alignant les footers des cartes */}
       <div className="flex-grow mb-4">
-        <p className="text-gray-700 line-clamp-3">
-          {" "}
+        <p className="text-black line-clamp-3">
           {/* line-clamp-3 limite la description à 3 lignes */}
           {offer.description}
         </p>
       </div>
 
-      <footer className="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-500">
+      <footer className="mt-auto pt-4 border-t border-[color:var(--border)] flex justify-between items-center text-sm text-black">
         {/* Affichage des tags s'ils existent */}
         <div className="flex flex-wrap gap-2">
           {offer.tags.map((tag) => (
             <span
               key={tag}
-              className="bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-xs font-semibold"
+              className="bg-[color:var(--accent)] text-white px-2 py-1 rounded-full text-xs font-semibold"
             >
               {tag}
             </span>

@@ -21,12 +21,12 @@ export function CategoryCard({ type, title, description }: CategoryCardProps) {
   return (
     <Link
       href={href}
-      className="block p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      className="block p-6 bg-white border border-[color:var(--border)] rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] focus:ring-offset-2"
     >
-      <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+      <h2 className="mb-2 text-2xl font-bold tracking-tight text-black">
         {title}
       </h2>
-      <p className="font-normal text-gray-600">{description}</p>
+      <p className="font-normal text-black">{description}</p>
     </Link>
   );
 }

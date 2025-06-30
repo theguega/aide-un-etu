@@ -15,7 +15,7 @@ function SubmitButton() {
       type="submit"
       aria-disabled={pending}
       disabled={pending}
-      className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+      className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
     >
       {pending ? "Publication en cours..." : "Publier mon offre"}
     </button>
@@ -29,17 +29,14 @@ export function CreateOfferForm() {
   return (
     <form action={dispatch} className="space-y-6">
       <div className="space-y-2">
-        <label
-          htmlFor="title"
-          className="block text-sm font-medium text-gray-800"
-        >
+        <label htmlFor="title" className="block text-sm font-medium text-black">
           Titre de l'offre
         </label>
         <input
           type="text"
           id="title"
           name="title"
-          className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          className="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 bg-white text-black"
           required
           aria-describedby="title-error"
         />
@@ -57,7 +54,7 @@ export function CreateOfferForm() {
       <div className="space-y-2">
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-800"
+          className="block text-sm font-medium text-black"
         >
           Description détaillée
         </label>
@@ -65,7 +62,7 @@ export function CreateOfferForm() {
           id="description"
           name="description"
           rows={5}
-          className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          className="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 bg-white text-black"
           required
           aria-describedby="description-error"
         />
@@ -82,14 +79,14 @@ export function CreateOfferForm() {
         <div className="space-y-2">
           <label
             htmlFor="type"
-            className="block text-sm font-medium text-gray-800"
+            className="block text-sm font-medium text-black"
           >
             Type d'offre
           </label>
           <select
             id="type"
             name="type"
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 bg-white text-black"
             defaultValue=""
             required
             aria-describedby="type-error"
@@ -114,7 +111,7 @@ export function CreateOfferForm() {
         <div className="space-y-2">
           <label
             htmlFor="tags"
-            className="block text-sm font-medium text-gray-800"
+            className="block text-sm font-medium text-black"
           >
             Tags
           </label>
@@ -123,10 +120,10 @@ export function CreateOfferForm() {
             id="tags"
             name="tags"
             placeholder="ex: bricolage, cours, python"
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 bg-white text-black"
             aria-describedby="tags-helper"
           />
-          <p id="tags-helper" className="text-xs text-gray-500">
+          <p id="tags-helper" className="text-xs text-gray-600">
             Séparez les tags par une virgule.
           </p>
         </div>
@@ -136,7 +133,7 @@ export function CreateOfferForm() {
         <div className="space-y-2">
           <label
             htmlFor="city"
-            className="block text-sm font-medium text-gray-800"
+            className="block text-sm font-medium text-black"
           >
             Ville
           </label>
@@ -146,7 +143,7 @@ export function CreateOfferForm() {
             name="city"
             required
             aria-describedby="city-error"
-            className="block w-full border-gray-300 rounded-md shadow-sm"
+            className="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 bg-white text-black"
           />
           <div id="city-error" aria-live="polite" aria-atomic="true">
             {state.errors?.city && (
@@ -159,7 +156,7 @@ export function CreateOfferForm() {
         <div className="space-y-2">
           <label
             htmlFor="postalCode"
-            className="block text-sm font-medium text-gray-800"
+            className="block text-sm font-medium text-black"
           >
             Code Postal
           </label>
@@ -171,7 +168,7 @@ export function CreateOfferForm() {
             maxLength={5}
             required
             aria-describedby="postalCode-error"
-            className="block w-full border-gray-300 rounded-md shadow-sm"
+            className="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-green-600 focus:border-green-600 bg-white text-black"
           />
           <div id="postalCode-error" aria-live="polite" aria-atomic="true">
             {state.errors?.postalCode && (

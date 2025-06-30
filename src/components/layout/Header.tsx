@@ -6,8 +6,7 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import { useState } from "react"
 
 export function Header() {
-  const { data: session, status } = useSession()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { data: session, status } = useSession() // Pour utiliser la session : {session.user?.name}
 
   // Gestion du loading accessible
   if (status === "loading") {
@@ -32,26 +31,32 @@ export function Header() {
   }
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    // -- ACCESSIBILITÉ: La balise <header> est un "landmark" (point de repère) majeur --
+    <header className="bg-white border-b border-[color:var(--border)] sticky top-0 z-10">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex md:flex-row flex-col items-start py-4 gap-2">
           {/* Logo / Nom du site */}
-          <Link 
-            href="/" 
-            className="text-2xl font-bold text-blue-800 hover:text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-1"
-            aria-label="Retour à la page d'accueil de Aide-un-étudiant"
-          >
-            Aide-un-étudiant
-          </Link>
+          <div className="w-full flex items-center justify-center">
+            <Link
+              href="/"
+              className="text-4xl font-bold text-black"
+              aria-label="Retour à la page d'accueil de Aide-un-étudiant"
+            >
+              Aide-un-étudiant
+            </Link>
+          </div>
 
-          {/* Navigation principale */}
-          <nav aria-label="Navigation principale">
+          {/* -- ACCESSIBILITÉ: La balise <nav> est le landmark pour la navigation principale -- */}
+          <nav
+            aria-label="Navigation principale"
+            className="w-full flex justify-center"
+          >
+            {/* -- ACCESSIBILITÉ: Une liste est la structure sémantique correcte pour un menu -- */}
             <ul className="flex items-center gap-6">
               <li>
-                <Link 
-                  href="/creer-offre" 
-                  className="text-gray-700 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-3 py-2 transition-colors"
-                  aria-describedby="creer-offre-desc"
+                <Link
+                  href="/creer-offre"
+                  className="text-black hover:text-[color:var(--accent)] focus:text-[color:var(--accent)] transition-colors"
                 >
                   Créer une offre
                   <span id="creer-offre-desc" className="sr-only">
@@ -63,23 +68,16 @@ export function Header() {
               {/* Logique d'affichage conditionnelle : Connexion ou Profil */}
               <li>
                 {session ? (
-                  <div className="flex items-center gap-4">
-                    <span 
-                      className="text-gray-700 font-medium"
-                      aria-label={`Connecté en tant que ${session.user?.name}`}
-                    >
-                      Bonjour, {session.user?.name}
-                    </span>
-                    
+                  <div className="flex items-center gap-4">  
                     <button
                       onClick={() => signOut({
                         callbackUrl: '/',
                         redirect: true
                       })}
-                      className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+                      className="bg-red-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]"
                       aria-label="Se déconnecter de la session"
                     >
-                      Déconnexion
+                      Se déconnecter
                     </button>
                   </div>
                 ) : (
@@ -88,73 +86,15 @@ export function Header() {
                       callbackUrl: '/',
                       redirect: true
                     })}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-                    aria-label="Se connecter avec votre compte étudiant"
+                    className="bg-[color:var(--accent)] text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] transition-colors"
                   >
-                    Connexion
+                    Se connecter
                   </button>
                 )}
               </li>
             </ul>
           </nav>
-
-          {/* Menu mobile (accessibilité) */}
-          <button
-            className="md:hidden p-2 rounded-md text-gray-700 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-expanded={isMenuOpen}
-            aria-controls="mobile-menu"
-            aria-label="Ouvrir le menu de navigation"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
         </div>
-
-        {/* Menu mobile déroulant */}
-        {isMenuOpen && (
-          <nav 
-            id="mobile-menu" 
-            className="md:hidden pb-4"
-            aria-label="Navigation mobile"
-          >
-            <ul className="flex flex-col gap-2">
-              <li>
-                <Link 
-                  href="/creer-offre" 
-                  className="block text-gray-700 hover:text-blue-800 py-2 px-4 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Créer une offre
-                </Link>
-              </li>
-              <li>
-                {session ? (
-                  <button
-                    onClick={() => {
-                      setIsMenuOpen(false)
-                      signOut({ callbackUrl: '/' })
-                    }}
-                    className="block w-full text-left bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700"
-                  >
-                    Déconnexion
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setIsMenuOpen(false)
-                      signIn('custom-provider', { callbackUrl: '/' })
-                    }}
-                    className="block w-full text-left bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
-                  >
-                    Connexion
-                  </button>
-                )}
-              </li>
-            </ul>
-          </nav>
-        )}
       </div>
     </header>
   )

@@ -75,7 +75,8 @@ export async function createOffer(
     });
   } catch (error) {
     return {
-      message: "Erreur de la base de données : impossible de créer l'offre.",
+      message:
+        "Une erreur est survenue lors de la création de l'offre. Veuillez réessayer plus tard.",
     };
   }
 

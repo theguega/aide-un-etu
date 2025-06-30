@@ -30,7 +30,7 @@ export function CreateOfferForm() {
     <form action={dispatch} className="space-y-6">
       <div className="space-y-2">
         <label htmlFor="title" className="block text-sm font-medium text-black">
-          Titre de l'offre
+          Titre de l&apos;offre
         </label>
         <input
           type="text"
@@ -81,7 +81,7 @@ export function CreateOfferForm() {
             htmlFor="type"
             className="block text-sm font-medium text-black"
           >
-            Type d'offre
+            Type d&apos;offre
           </label>
           <select
             id="type"

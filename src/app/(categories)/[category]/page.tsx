@@ -1,14 +1,17 @@
-// src/app/(categories)/[category]/page.tsx
-
 import { FilterBar } from "@/components/ui/FilterBar";
 import { OfferCard } from "@/components/ui/OfferCard";
 import { prisma } from "@/lib/prisma";
-import { OfferType } from "@prisma/client";
+import { OfferType, Offer } from "@prisma/client";
 import { notFound } from "next/navigation";
 
-// -- ÉCO-CONCEPTION & PERFORMANCE : Static Site Generation (SSG) --
-// On indique à Next.js à l'avance quelles pages de catégories existent.
-// Il va les pré-générer en HTML statique lors du build. C'est ultra-rapide !
+// Type pour éviter les `as any`
+type OfferWithAuthor = Offer & {
+  author: {
+    pseudo: string;
+  };
+};
+
+// Fonction statique (parfaite pour la génération de routes dynamiques)
 export async function generateStaticParams() {
   return [
     { category: "objets" },
@@ -17,64 +20,58 @@ export async function generateStaticParams() {
   ];
 }
 
-interface CategoryPageProps {
-  params: { category: string }; // ex: 'objets', 'services'...
-  searchParams: { [key: string]: string | undefined }; // ex: { postalCode: '75001' }
-}
+// Page principale
+export default async function CategoryPage({
+  params,
+  searchParams,
+}: {
+  params: { category: string };
+  searchParams?: Record<string, string | undefined>;
+}) {
+  const categoryMap = {
+    objets: { type: OfferType.OBJET, title: "Objets à prêter" },
+    services: { type: OfferType.SERVICE, title: "Services proposés" },
+    connaissances: {
+      type: OfferType.CONNAISSANCE,
+      title: "Connaissances à partager",
+    },
+  };
 
-// Mappage pour la conversion et l'affichage
-const categoryMap = {
-  objets: {
-    type: OfferType.OBJET,
-    title: "Objets à prêter",
-  },
-  services: {
-    type: OfferType.SERVICE,
-    title: "Services proposés",
-  },
-  connaissances: {
-    type: OfferType.CONNAISSANCE,
-    title: "Connaissances à partager",
-  },
-};
-
-export default async function CategoryPage(props: CategoryPageProps) {
-  const params = await props.params;
-  const searchParams = await props.searchParams;
   const categorySlug = params.category;
   const categoryInfo = categoryMap[categorySlug as keyof typeof categoryMap];
 
-  // Si l'URL ne correspond à aucune catégorie connue, on affiche une page 404.
-  if (!categoryInfo) {
-    notFound();
-  }
+  if (!categoryInfo) notFound();
 
-  // TODO: Remplacer par la vraie logique de session NextAuth
-  const session = null;
-  const userPostalCode = session ? "75001" : undefined;
+  const postalCodeFilter = searchParams?.postalCode;
 
-  const postalCodeFilter = searchParams.postalCode || userPostalCode;
-  const tagsFilter = searchParams.tags
-    ?.split(",")
-    .map((t) => t.trim())
-    .filter(Boolean);
+  const tagsQuery = searchParams?.tags;
+  const tagsFilter = tagsQuery
+    ? tagsQuery
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean)
+    : [];
 
-  // -- ÉCO-CONCEPTION : Requête ciblée et paginée --
-  const offers = await prisma.offer.findMany({
-    where: {
-      type: categoryInfo.type, // Filtre sur le bon type d'offre
-      ...(postalCodeFilter && { postalCode: postalCodeFilter }),
-      ...(tagsFilter &&
-        tagsFilter.length > 0 && {
-          tags: { hasSome: tagsFilter },
-        }),
-    },
+  const whereClause: any = {
+    type: categoryInfo.type,
+    ...(postalCodeFilter && { postalCode: postalCodeFilter }),
+    ...(tagsFilter.length > 0 && {
+      AND: tagsFilter.map((tag) => ({
+        tags: {
+          contains: tag,
+        },
+      })),
+    }),
+  };
+
+  const offers: OfferWithAuthor[] = await prisma.offer.findMany({
+    where: whereClause,
     include: {
       author: {
-        select: { pseudo: true }, // On ne récupère que le pseudo de l'auteur
+        select: { pseudo: true },
       },
     },
-    take: 20, // On limite le nombre de résultats pour ne pas surcharger la page
+    take: 20,
     orderBy: { createdAt: "desc" },
   });
 
@@ -92,23 +89,20 @@ export default async function CategoryPage(props: CategoryPageProps) {
         {offers.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {offers.map((offer) => (
-              // On passe un type `OfferWithAuthor` pour que le composant ait accès à l'auteur
-              <OfferCard key={offer.id} offer={offer as any} />
+              <OfferCard key={offer.id} offer={offer} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 px-4 bg-gray-50 rounded-lg">
-            <p className="text-lg font-medium text-gray-700">
+          <div className="text-center py-16 px-4 bg-muted rounded-lg">
+            <p className="text-lg font-medium text-foreground">
               Aucune offre ne correspond à vos critères.
             </p>
-            <p className="text-gray-500 mt-2">
-              Essayez d'élargir votre recherche ou revenez plus tard !
+            <p className="text-muted-foreground mt-2">
+              Essayez d&apos;élargir votre recherche ou revenez plus tard !
             </p>
           </div>
         )}
       </div>
-
-      {/* TODO: Implémenter un bouton "Charger plus" pour la pagination infinie */}
     </section>
   );
 }

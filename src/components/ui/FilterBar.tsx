@@ -1,5 +1,4 @@
-// src/components/ui/FilterBar.tsx
-"use client"; // Ce composant a besoin d'interactivité client
+"use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";

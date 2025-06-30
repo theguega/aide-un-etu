@@ -1,12 +1,11 @@
 // src/components/layout/Header.tsx
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useSession, signIn, signOut } from "next-auth/react"
-import { useState } from "react"
+import Link from "next/link";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export function Header() {
-  const { data: session, status } = useSession() // Pour utiliser la session : {session.user?.name}
+  const { data: session, status } = useSession(); // Pour utiliser la session : {session.user?.name}
 
   // Gestion du loading accessible
   if (status === "loading") {
@@ -17,8 +16,8 @@ export function Header() {
             <div className="text-2xl font-bold text-gray-800">
               Aide-un-étudiant
             </div>
-            <div 
-              className="text-gray-600" 
+            <div
+              className="text-gray-600"
               aria-live="polite"
               aria-label="Chargement de la session utilisateur"
             >
@@ -27,7 +26,7 @@ export function Header() {
           </div>
         </div>
       </header>
-    )
+    );
   }
 
   return (
@@ -68,12 +67,14 @@ export function Header() {
               {/* Logique d'affichage conditionnelle : Connexion ou Profil */}
               <li>
                 {session ? (
-                  <div className="flex items-center gap-4">  
+                  <div className="flex items-center gap-4">
                     <button
-                      onClick={() => signOut({
-                        callbackUrl: '/',
-                        redirect: true
-                      })}
+                      onClick={() =>
+                        signOut({
+                          callbackUrl: "/",
+                          redirect: true,
+                        })
+                      }
                       className="bg-red-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]"
                       aria-label="Se déconnecter de la session"
                     >
@@ -82,10 +83,12 @@ export function Header() {
                   </div>
                 ) : (
                   <button
-                    onClick={() => signIn('custom-provider', {
-                      callbackUrl: '/',
-                      redirect: true
-                    })}
+                    onClick={() =>
+                      signIn("custom-provider", {
+                        callbackUrl: "/",
+                        redirect: true,
+                      })
+                    }
                     className="bg-[color:var(--accent)] text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] transition-colors"
                   >
                     Se connecter
@@ -97,5 +100,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }

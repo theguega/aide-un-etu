@@ -40,34 +40,40 @@ export const authOptions: NextAuthOptions = {
   
   callbacks: {
     async jwt({ token, account, profile, user }) {
-      console.log("JWT CALLBACK CALLED", { token, account, profile, user });
-      
-      if (account && profile) {
-        token.email = (profile as any).email;
-        token.name = (profile as any).name;
-        token.id = (profile as any).id;
-        console.log("JWT CALLBACK PROFILE", profile);
+      // Si c’est une nouvelle connexion (first sign-in)
+      if (account && user) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+        })
+
+        if (dbUser) {
+          token.id = dbUser.id.toString()
+          token.name = dbUser.pseudo
+          token.email = dbUser.email
+        } else {
+          token.email = (profile as any)?.email
+          token.name = (profile as any)?.name
+          token.id = (profile as any)?.id
+        }
       }
-      
+
       return token
     },
     
     async session({ session, token }) {
-      console.log("SESSION CALLBACK CALLED", { session, token });
-      
       if (token) {
-        session.user.email = token.email as string;
-        session.user.name = token.name as string;
-        session.user.id = token.id as string;
+        session.user = {
+          ...(session.user || {}),
+          email: token.email as string,
+          name: token.name as string,
+          id: token.id as string,
+        }
       }
-      
-      console.log("SESSION CALLBACK RESULT", session);
+
       return session
     },
     
     async signIn({ user, account, profile }) {
-      console.log("SIGNIN CALLBACK CALLED", { user, account, profile })
-
       try {
         if (!user.email) {
           console.log("No email found")
@@ -86,7 +92,6 @@ export const authOptions: NextAuthOptions = {
           return `/complete-profile?mail=${email}&pseudo=${pseudo}`
         }
 
-        console.log("User found, allowing sign in")
         return true
       } catch (error) {
         console.error("Erreur lors de la connexion:", error)
@@ -103,10 +108,7 @@ export const authOptions: NextAuthOptions = {
   jwt: {
     maxAge: 60 * 60,
   },
-  
-  // Activer le debug pour voir les logs
-  debug: process.env.NODE_ENV === "development",
-  
+    
   logger: {
     error: (code, metadata) => {
       console.error(`Auth Error ${code}:`, metadata)

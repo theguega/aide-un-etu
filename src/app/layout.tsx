@@ -5,6 +5,8 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SessionProvider } from "@/components/providers/SessionProvider"
+import { authOptions } from "@/lib/auth"
+import { getServerSession } from "next-auth/next"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -32,11 +34,13 @@ export const metadata: Metadata = {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const session = await getServerSession(authOptions)
+
   return (
     <html lang="fr" className="scroll-smooth">
       <head>
@@ -58,7 +62,7 @@ export default function RootLayout({
           Aller au contenu principal
         </a>*/}
         
-        <SessionProvider>
+        <SessionProvider session={session}>
           <Header />
           
           <main 

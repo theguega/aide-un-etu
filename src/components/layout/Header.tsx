@@ -7,7 +7,6 @@ import { useState } from "react"
 
 export function Header() {
   const { data: session, status } = useSession() // Pour utiliser la session : {session.user?.name}
-  console.log(session)
 
   // Gestion du loading accessible
   if (status === "loading") {

@@ -1,7 +1,7 @@
 "use client"
 
 import { useSession } from "next-auth/react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { useState, useEffect } from "react"
 import { signIn } from "next-auth/react"
 import { Input } from "@/components/ui/input"
@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button"
 
 export default function CompleteProfilePage() {
   const { data: session } = useSession()
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   const [formData, setFormData] = useState({

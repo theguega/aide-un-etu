@@ -11,7 +11,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { email, pseudo, phone, age, gender, description, city, postalCode } = req.body
 
   try {
-    console.log(req.body)
     const user = await prisma.user.create({
       data: {
         email,

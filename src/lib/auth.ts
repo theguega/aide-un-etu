@@ -1,7 +1,7 @@
-// src/lib/auth.ts
-import NextAuth from "next-auth"
-import type { NextAuthOptions } from "next-auth"
-import { prisma } from "./prisma"
+import NextAuth from "next-auth";
+import type { NextAuthOptions } from "next-auth";
+import { prisma } from "./prisma";
+import type { Profile } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -24,42 +24,42 @@ export const authOptions: NextAuthOptions = {
       userinfo: {
         url: process.env.OAUTH_RESOURCE_OWNER_DETAILS_URL!,
       },
-      profile(profile) {        
+      profile(profile) {
         if (profile.deleted_at != null || profile.active != 1) {
-          throw new Error("Compte supprimé ou désactivé")
+          throw new Error("Compte supprimé ou désactivé");
         }
-        
+
         return {
           id: profile.id?.toString() || profile.email,
           email: profile.email,
           name: profile.firstName + " " + profile.lastName,
-        }
+        };
       },
-    }
+    },
   ],
-  
+
   callbacks: {
     async jwt({ token, account, profile, user }) {
       // Si c’est une nouvelle connexion (first sign-in)
       if (account && user) {
         const dbUser = await prisma.user.findUnique({
           where: { email: user.email! },
-        })
+        });
 
         if (dbUser) {
-          token.id = dbUser.id.toString()
-          token.name = dbUser.pseudo
-          token.email = dbUser.email
+          token.id = dbUser.id.toString();
+          token.name = dbUser.pseudo;
+          token.email = dbUser.email;
         } else {
-          token.email = (profile as any)?.email
-          token.name = (profile as any)?.name
-          token.id = (profile as any)?.id
+          token.email = (profile as Profile | undefined)?.email;
+          token.name = (profile as Profile | undefined)?.name;
+          token.id = (profile as Profile | undefined)?.id;
         }
       }
 
-      return token
+      return token;
     },
-    
+
     async session({ session, token }) {
       if (token) {
         session.user = {
@@ -67,59 +67,59 @@ export const authOptions: NextAuthOptions = {
           email: token.email as string,
           name: token.name as string,
           id: token.id as string,
-        }
+        };
       }
 
-      return session
+      return session;
     },
-    
-    async signIn({ user, account, profile }) {
+
+    async signIn({ user }) {
       try {
         if (!user.email) {
-          console.log("No email found")
-          return false
+          console.log("No email found");
+          return false;
         }
 
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email },
-        })
+        });
 
         if (!existingUser) {
-          console.log("User not found, redirecting to complete-profile")
+          console.log("User not found, redirecting to complete-profile");
 
-          const email = encodeURIComponent(user.email)
-          const pseudo = encodeURIComponent(user.name || "")
-          return `/complete-profile?mail=${email}&pseudo=${pseudo}`
+          const email = encodeURIComponent(user.email);
+          const pseudo = encodeURIComponent(user.name || "");
+          return `/complete-profile?mail=${email}&pseudo=${pseudo}`;
         }
 
-        return true
+        return true;
       } catch (error) {
-        console.error("Erreur lors de la connexion:", error)
-        return false
+        console.error("Erreur lors de la connexion:", error);
+        return false;
       }
-    }
+    },
   },
-  
+
   session: {
     strategy: "jwt",
     maxAge: 60 * 60,
   },
-  
+
   jwt: {
     maxAge: 60 * 60,
   },
-    
+
   logger: {
     error: (code, metadata) => {
-      console.error(`Auth Error ${code}:`, metadata)
+      console.error(`Auth Error ${code}:`, metadata);
     },
     warn: (code) => {
-      console.warn(`Auth Warning ${code}`)
+      console.warn(`Auth Warning ${code}`);
     },
     debug: (code, metadata) => {
-      console.log(`Auth Debug ${code}:`, metadata)
-    }
-  }
-}
+      console.log(`Auth Debug ${code}:`, metadata);
+    },
+  },
+};
 
-export default NextAuth(authOptions)
+export default NextAuth(authOptions);

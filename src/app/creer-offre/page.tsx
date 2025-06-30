@@ -1,11 +1,15 @@
-// src/app/creer-offre/page.tsx
 "use client";
 
 import { CreateOfferForm } from "@/components/CreateOfferForm";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 export default function CreateOfferPage() {
+  useEffect(() => {
+    document.title = "Créer une offre d'entraide - Aide-un-étudiant";
+  }, []);
+
   const { data: session } = useSession();
 
   if (!session) {

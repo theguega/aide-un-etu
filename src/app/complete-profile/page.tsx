@@ -1,15 +1,19 @@
-"use client"
+"use client";
 
-import { useSession } from "next-auth/react"
-import { useSearchParams } from "next/navigation"
-import { useState, useEffect } from "react"
-import { signIn } from "next-auth/react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { signIn } from "next-auth/react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function CompleteProfilePage() {
-  const { data: session } = useSession()
-  const searchParams = useSearchParams()
+  useEffect(() => {
+    document.title = "Création profil - Aide-un-étudiant";
+  }, []);
+
+  const { data: session } = useSession();
+  const searchParams = useSearchParams();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -21,46 +25,48 @@ export default function CompleteProfilePage() {
     city: "",
     postalCode: "",
     acceptCGU: false,
-  })
+  });
 
   useEffect(() => {
-    const email = searchParams.get("mail")
-    const pseudo = searchParams.get("pseudo")
+    const email = searchParams.get("mail");
+    const pseudo = searchParams.get("pseudo");
 
     setFormData((prev) => ({
       ...prev,
       email: session?.user?.email || email || "",
-      pseudo: session?.user?.name || pseudo || ""
-    }))
-  }, [session, searchParams])
+      pseudo: session?.user?.name || pseudo || "",
+    }));
+  }, [session, searchParams]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
-    const { name, value, type, checked } = e.target
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!formData.acceptCGU) {
-      alert("Vous devez accepter les conditions générales d'utilisation.")
-      return
+      alert("Vous devez accepter les conditions générales d'utilisation.");
+      return;
     }
 
     const res = await fetch("/api/complete-profile", {
       method: "POST",
       body: JSON.stringify(formData),
       headers: { "Content-Type": "application/json" },
-    })
+    });
 
     if (res.ok) {
-      await signIn("custom-provider", { callbackUrl: "/" })
+      await signIn("custom-provider", { callbackUrl: "/" });
     }
-  }
+  };
 
   return (
     <div
@@ -77,7 +83,10 @@ export default function CompleteProfilePage() {
         {/* Pseudo */}
         <div className="flex flex-col">
           <label htmlFor="pseudo" className="mb-1 font-semibold">
-            Pseudo <span aria-hidden="true" className="text-red-600">*</span>
+            Pseudo{" "}
+            <span aria-hidden="true" className="text-red-600">
+              *
+            </span>
           </label>
           <Input
             id="pseudo"
@@ -147,7 +156,10 @@ export default function CompleteProfilePage() {
         {/* Description - prend les 2 colonnes */}
         <div className="flex flex-col col-span-1 sm:col-span-2">
           <label htmlFor="description" className="mb-1 font-semibold">
-            Description <span aria-hidden="true" className="text-red-600">*</span>
+            Description{" "}
+            <span aria-hidden="true" className="text-red-600">
+              *
+            </span>
           </label>
           <textarea
             id="description"
@@ -164,7 +176,10 @@ export default function CompleteProfilePage() {
         {/* Ville */}
         <div className="flex flex-col">
           <label htmlFor="city" className="mb-1 font-semibold">
-            Ville <span aria-hidden="true" className="text-red-600">*</span>
+            Ville{" "}
+            <span aria-hidden="true" className="text-red-600">
+              *
+            </span>
           </label>
           <Input
             id="city"
@@ -181,7 +196,10 @@ export default function CompleteProfilePage() {
         {/* Code postal */}
         <div className="flex flex-col">
           <label htmlFor="postalCode" className="mb-1 font-semibold">
-            Code postal <span aria-hidden="true" className="text-red-600">*</span>
+            Code postal{" "}
+            <span aria-hidden="true" className="text-red-600">
+              *
+            </span>
           </label>
           <Input
             id="postalCode"
@@ -207,14 +225,14 @@ export default function CompleteProfilePage() {
             required
           />
           <label htmlFor="acceptCGU" className="text-sm select-none">
-            J'accepte les{" "}
+            J&apos;accepte les{" "}
             <a
               href="/cgu"
               target="_blank"
               rel="noopener noreferrer"
               className="text-green-600 underline hover:text-green-700"
             >
-              conditions générales d'utilisation
+              conditions générales d&apos;utilisation
             </a>{" "}
             et la{" "}
             <a
@@ -241,5 +259,5 @@ export default function CompleteProfilePage() {
         </div>
       </form>
     </div>
-  )
+  );
 }

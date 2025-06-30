@@ -35,7 +35,11 @@ export async function OfferCard({ offer }: OfferCardProps) {
         <span className="inline-block bg-accent text-background font-medium px-3 py-0.5 rounded-full text-xs mb-1">
           {offer.city}, {offer.postalCode}
         </span>
-        { session? <span className="inline-block bg-red-400 font-medium px-3 py-0.5 rounded-full text-xs mb-1">Supprimer l'offre</span> : null}
+        {session ? (
+          <span className="inline-block bg-red-400 font-medium px-3 py-0.5 rounded-full text-xs mb-1">
+            Supprimer l&apos;offre
+          </span>
+        ) : null}
       </header>
 
       <div className="flex flex-wrap gap-1 mb-3">
@@ -54,6 +58,17 @@ export async function OfferCard({ offer }: OfferCardProps) {
           {offer.description}
         </p>
       </div>
+
+      {offer.price ? (
+        <div className="text-foreground font-semibold text-lg mb-2">
+          {offer.price.toLocaleString("fr-FR", {
+            style: "currency",
+            currency: "EUR",
+          })}
+        </div>
+      ) : (
+        <div className="text-foreground/70 italic mb-2">Gratuit</div>
+      )}
 
       <footer className="mt-auto pt-4 border-t border-theme flex items-center justify-between text-xs text-foreground/60">
         <span className="italic flex items-center gap-1">

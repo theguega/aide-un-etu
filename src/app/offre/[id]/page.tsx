@@ -168,7 +168,7 @@ export default async function OfferDetailPage({
               </h3>
               {isOwner ? (
                 <div className="text-sm text-accent p-3 bg-surface rounded-md border border-theme text-center">
-                  C'est votre annonce.
+                  C&apos;est votre annonce.
                 </div>
               ) : session ? (
                 // <-- User's contact info, shown only to logged-in users -->

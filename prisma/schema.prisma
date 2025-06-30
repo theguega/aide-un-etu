@@ -30,6 +30,7 @@ model Offer {
   description String
   type        OfferType
   tags        String
+  price       Float?
   city        String
   postalCode  String
 

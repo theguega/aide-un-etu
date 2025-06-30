@@ -19,6 +19,7 @@ const CreateOfferSchema = z.object({
     errorMap: () => ({ message: "Veuillez sélectionner un type valide." }),
   }),
   tags: z.string(),
+  price: z.string().optional(),
   city: z.string().min(2, { message: "La ville est requise." }),
   postalCode: z
     .string()
@@ -32,6 +33,7 @@ export type FormState = {
     type?: string[];
     city?: string[];
     postalCode?: string[];
+    price?: string[];
     tags?: string[];
   };
   message?: string;
@@ -68,6 +70,7 @@ export async function createOffer(
     description: formData.get("description"),
     type: formData.get("type"),
     tags: formData.get("tags"),
+    price: formData.get("price"),
     city: formData.get("city"),
     postalCode: formData.get("postalCode"),
   });
@@ -88,7 +91,10 @@ export async function createOffer(
         city: validatedFields.data.city,
         postalCode: validatedFields.data.postalCode,
         tags: validatedFields.data.tags,
-        authorId: userId, // 👈 utilisateur réel connecté
+        price: validatedFields.data.price
+          ? parseFloat(validatedFields.data.price)
+          : null,
+        authorId: userId,
       },
     });
   } catch (error) {

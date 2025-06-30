@@ -3,15 +3,20 @@ import { OfferCard } from "@/components/ui/OfferCard";
 import { prisma } from "@/lib/prisma";
 import { OfferType, Offer } from "@prisma/client";
 import { notFound } from "next/navigation";
+import { Prisma } from "@prisma/client";
 
-// Type pour éviter les `as any`
+export const metadata = {
+  title: "Aide-un-étudiant - Offres par catégorie",
+  description:
+    "Découvrez les offres d'entraide classées par catégorie : objets, services et connaissances. Trouvez facilement ce dont vous avez besoin ou proposez votre aide.",
+};
+
 type OfferWithAuthor = Offer & {
   author: {
     pseudo: string;
   };
 };
 
-// Fonction statique (parfaite pour la génération de routes dynamiques)
 export async function generateStaticParams() {
   return [
     { category: "objets" },
@@ -20,7 +25,6 @@ export async function generateStaticParams() {
   ];
 }
 
-// Page principale
 export default async function CategoryPage({
   params,
   searchParams,
@@ -52,7 +56,7 @@ export default async function CategoryPage({
         .filter(Boolean)
     : [];
 
-  const whereClause: any = {
+  const whereClause: Prisma.OfferWhereInput = {
     type: categoryInfo.type,
     ...(postalCodeFilter && { postalCode: postalCodeFilter }),
     ...(tagsFilter.length > 0 && {

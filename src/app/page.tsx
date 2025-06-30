@@ -10,13 +10,13 @@ export default function HomePage() {
           Bienvenue sur Aide-un-étudiant
         </h1>
         <p className="text-lg text-gray-600">
-          La plateforme qui facilite l'entraide près de chez vous.
+          La plateforme qui facilite l&#39;entraide près de chez vous.
         </p>
       </section>
 
       <section aria-labelledby="categories-title">
         <h2 id="categories-title" className="sr-only">
-          Catégories d'entraide
+          Catégories d&#39;entraide
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           <CategoryCard

@@ -1,13 +1,10 @@
 // src/components/ui/OfferCard.tsx
 
 import Link from "next/link";
-import type { Offer, User } from "@prisma/client";
+import type { Offer } from "@prisma/client";
 
-// Pour plus de robustesse, on peut définir un type qui inclut l'auteur
-// car on voudra sûrement l'afficher. On le fera via la requête Prisma.
-// Pour l'instant, on se contente du type Offer de base.
 interface OfferCardProps {
-  offer: Offer; // On pourrait plus tard utiliser : offer: Offer & { author: User }
+  offer: Offer;
 }
 
 // Fonction utilitaire pour formater les dates de manière lisible et sobre
@@ -24,47 +21,54 @@ export function OfferCard({ offer }: OfferCardProps) {
   const offerUrl = `/offre/${offer.id}`;
 
   return (
-    // -- ACCESSIBILITÉ & ÉCO-CONCEPTION : Tout comme CategoryCard, la carte entière est un lien.
-    // Une seule cible de tabulation, et pré-chargement par Next.js.
     <Link
       href={offerUrl}
-      className="group flex flex-col h-full bg-white border border-[color:var(--border)] rounded-lg p-5 transition-shadow duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] focus:ring-offset-2"
+      className="group flex flex-col h-full bg-surface border border-theme rounded-xl p-6 transition-shadow duration-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
     >
-      <header className="mb-3">
-        {/* -- ACCESSIBILITÉ : Le titre est un <h3>, car il est hiérarchiquement sous le <h1> de la page ("Objets à prêter") */}
-        <h3 className="text-xl font-bold text-black group-hover:underline">
+      <header className="mb-4">
+        <h3 className="text-2xl font-extrabold text-foreground group-hover:underline mb-1">
           {offer.title}
         </h3>
-        <p className="text-sm text-black mt-1">
+        <span className="inline-block bg-accent text-background font-medium px-3 py-0.5 rounded-full text-xs mb-1">
           {offer.city}, {offer.postalCode}
-        </p>
+        </span>
       </header>
 
-      {/* On utilise flex-grow pour que la description prenne l'espace disponible, alignant les footers des cartes */}
+      <div className="flex flex-wrap gap-1 mb-3">
+        {offer.tags.split(",").map((tag) => (
+          <span
+            key={tag}
+            className="bg-surface text-foreground/70 font-medium px-2 py-0.5 rounded-full text-xs"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
       <div className="flex-grow mb-4">
-        <p className="text-black line-clamp-3">
-          {/* line-clamp-3 limite la description à 3 lignes */}
+        <p className="text-foreground text-sm leading-relaxed line-clamp-3">
           {offer.description}
         </p>
       </div>
 
-      <footer className="mt-auto pt-4 border-t border-[color:var(--border)] flex justify-between items-center text-sm text-black">
-        {/* Affichage des tags s'ils existent */}
-        <div className="flex flex-wrap gap-2">
-          {offer.tags.map((tag) => (
-            <span
-              key={tag}
-              className="bg-[color:var(--accent)] text-white px-2 py-1 rounded-full text-xs font-semibold"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        {/* -- ÉCO-CONCEPTION : On affiche une date formatée simplement, sans librairie lourde comme moment.js -- */}
-        <time dateTime={offer.createdAt.toISOString()}>
-          {formatDate(offer.createdAt)}
-        </time>
+      <footer className="mt-auto pt-4 border-t border-theme flex items-center justify-between text-xs text-foreground/60">
+        <span className="italic flex items-center gap-1">
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            className="inline-block align-middle text-foreground/30"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M8 1.333A6.667 6.667 0 108 14.667 6.667 6.667 0 008 1.333zm0 12A5.333 5.333 0 118 2.667a5.333 5.333 0 010 10.666zm.667-8H7.333v4l3.5 2.1.667-1.1-3-1.8V5.333z"
+              fill="currentColor"
+            />
+          </svg>
+          <time dateTime={offer.createdAt.toISOString()}>
+            {formatDate(offer.createdAt)}
+          </time>
+        </span>
       </footer>
     </Link>
   );

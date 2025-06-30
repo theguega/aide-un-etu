@@ -12,11 +12,11 @@ const CreateOfferSchema = z.object({
     .min(5, { message: "Le titre doit faire au moins 5 caractères." }),
   description: z
     .string()
-    .min(20, { message: "La description doit faire au moins 20 caractères." }),
+    .min(5, { message: "La description doit faire au moins 5 caractères." }),
   type: z.nativeEnum(OfferType, {
     errorMap: () => ({ message: "Veuillez sélectionner un type valide." }),
   }),
-  tags: z.string().optional(),
+  tags: z.string(),
   city: z.string().min(2, { message: "La ville est requise." }),
   postalCode: z
     .string()
@@ -40,10 +40,25 @@ export async function createOffer(
   prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  // TODO: Récupérer la session de l'utilisateur. Refuser si non connecté.
   // const session = await getSession();
-  // if (!session?.user?.id) { return { message: "Vous devez être connecté." }; }
-  const fakeUserId = "clxyz..."; // REMPLACER par le vrai ID de session
+  // if (!session) {
+  //   return {
+  //     message: "Vous devez être connecté pour créer une offre.",
+  //     errors: { title: ["Veuillez vous connecter."] },
+  //   };
+  // }
+  const fakeUserId = "user1"; // TODO: Remplacez par session.user.id plus tard
+
+  // Vérifie si l'utilisateur existe avant de créer l'offre
+  const user = await prisma.user.findUnique({
+    where: { id: fakeUserId },
+  });
+  if (!user) {
+    return {
+      message: "Utilisateur introuvable. Veuillez vous reconnecter.",
+      errors: { title: ["Utilisateur introuvable."] },
+    };
+  }
 
   const validatedFields = CreateOfferSchema.safeParse({
     title: formData.get("title"),
@@ -76,7 +91,7 @@ export async function createOffer(
   } catch (error) {
     return {
       message:
-        "Une erreur est survenue lors de la création de l'offre. Veuillez réessayer plus tard.",
+        "Une erreur est survenue lors de la création de l'offre : " + error,
     };
   }
 

@@ -41,14 +41,17 @@ export default async function CategoryPage({
     },
   };
 
-  const categorySlug = params.category;
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+
+  const categorySlug = resolvedParams.category;
   const categoryInfo = categoryMap[categorySlug as keyof typeof categoryMap];
 
   if (!categoryInfo) notFound();
 
-  const postalCodeFilter = searchParams?.postalCode;
+  const postalCodeFilter = resolvedSearchParams?.postalCode;
 
-  const tagsQuery = searchParams?.tags;
+  const tagsQuery = resolvedSearchParams?.tags;
   const tagsFilter = tagsQuery
     ? tagsQuery
         .split(",")

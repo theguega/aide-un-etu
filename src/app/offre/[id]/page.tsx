@@ -1,4 +1,4 @@
-"use client";
+"use server";
 
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
@@ -235,7 +235,7 @@ export default async function OfferDetailPage({
                     }
                   }}
                 >
-                  Supprimer l'offre
+                  Supprimer l&apos;offre
                 </button>
               </form>
             )}

@@ -1,4 +1,4 @@
-"use client";
+"use server";
 
 import Link from "next/link";
 import type { Offer } from "@prisma/client";

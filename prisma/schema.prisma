@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// src/prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -7,41 +6,41 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  // L'URL de notre base de données SQLite. Le fichier sera créé à la racine.
   url      = "file:./dev.db"
 }
 
-// Modèle pour les utilisateurs
-// On reste simple pour le hackathon
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  // Relation : un utilisateur peut créer plusieurs offres
+  id          String  @id @default(cuid())
+  pseudo      String  @unique
+  email       String  @unique
+  phone       String?
+  age         Int?
+  gender      String?
+  description String?
+  city        String?
+  postalCode  String?
+
   offers    Offer[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
-// Modèle pour les offres (objets, services, etc.)
 model Offer {
-  id          String      @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   description String
-  // On utilise un Enum pour le type, c'est plus propre
   type        OfferType
+  tags        String
+  city        String
+  postalCode  String
 
-  // Relation : chaque offre est créée par un utilisateur
-  authorId    String
-  author      User        @relation(fields: [authorId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt DateTime @default(now())
 }
 
-// Enum pour les types d'offres
 enum OfferType {
-  OBJECT  // Prêt d'objet
-  SERVICE // Offre de service
-  KNOWLEDGE // Partage de connaissance
+  OBJET
+  SERVICE
+  CONNAISSANCE
 }

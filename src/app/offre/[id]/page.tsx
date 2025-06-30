@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const formatDate = (date: Date) => {
   return new Intl.DateTimeFormat("fr-FR", {
@@ -28,9 +30,8 @@ export default async function OfferDetailPage({
     notFound();
   }
 
-  const session = null; // TODO: Remplacez par votre logique de session plus tard
-  const fakeUserId = "user1"; // TODO: Remplacez par session.user.id plus tard
-  const isOwner = fakeUserId === offer.author.id;
+  const session = await getServerSession(authOptions);
+  const isOwner = session?.user?.id === offer.author.id;
 
   return (
     <main className="container mx-auto max-w-4xl py-8 px-2 md:px-0">
@@ -156,7 +157,7 @@ export default async function OfferDetailPage({
             {/* --- Author's personal description --- */}
             {offer.author.description && (
               <blockquote className="text-sm text-foreground mb-6 italic border-l-4 border-theme pl-4">
-                "{offer.author.description}"
+                {offer.author.description}
               </blockquote>
             )}
 

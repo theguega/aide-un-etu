@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import type { Offer } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 interface OfferCardProps {
   offer: Offer;
@@ -16,8 +18,9 @@ const formatDate = (date: Date) => {
   }).format(date);
 };
 
-export function OfferCard({ offer }: OfferCardProps) {
+export async function OfferCard({ offer }: OfferCardProps) {
   // On construit l'URL de la page de détail de l'offre
+  const session = await getServerSession(authOptions);
   const offerUrl = `/offre/${offer.id}`;
 
   return (
@@ -32,6 +35,7 @@ export function OfferCard({ offer }: OfferCardProps) {
         <span className="inline-block bg-accent text-background font-medium px-3 py-0.5 rounded-full text-xs mb-1">
           {offer.city}, {offer.postalCode}
         </span>
+        { session? <span className="inline-block bg-red-400 font-medium px-3 py-0.5 rounded-full text-xs mb-1">Supprimer l'offre</span> : null}
       </header>
 
       <div className="flex flex-wrap gap-1 mb-3">

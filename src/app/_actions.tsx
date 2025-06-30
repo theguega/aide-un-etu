@@ -5,6 +5,8 @@ import { OfferType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const CreateOfferSchema = z.object({
   title: z
@@ -23,7 +25,6 @@ const CreateOfferSchema = z.object({
     .regex(/^\d{5}$/, { message: "Le code postal doit contenir 5 chiffres." }),
 });
 
-// État initial pour notre hook useActionState
 export type FormState = {
   errors?: {
     title?: string[];
@@ -40,19 +41,21 @@ export async function createOffer(
   prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  // const session = await getSession();
-  // if (!session) {
-  //   return {
-  //     message: "Vous devez être connecté pour créer une offre.",
-  //     errors: { title: ["Veuillez vous connecter."] },
-  //   };
-  // }
-  const fakeUserId = "user1"; // TODO: Remplacez par session.user.id plus tard
+  const session = await getServerSession(authOptions);
 
-  // Vérifie si l'utilisateur existe avant de créer l'offre
+  if (!session || !session.user?.id) {
+    return {
+      message: "Vous devez être connecté pour créer une offre.",
+      errors: { title: ["Veuillez vous connecter."] },
+    };
+  }
+
+  const userId = session.user.id;
+
   const user = await prisma.user.findUnique({
-    where: { id: fakeUserId },
+    where: { id: userId },
   });
+
   if (!user) {
     return {
       message: "Utilisateur introuvable. Veuillez vous reconnecter.",
@@ -85,7 +88,7 @@ export async function createOffer(
         city: validatedFields.data.city,
         postalCode: validatedFields.data.postalCode,
         tags: validatedFields.data.tags,
-        authorId: fakeUserId,
+        authorId: userId, // 👈 utilisateur réel connecté
       },
     });
   } catch (error) {
@@ -95,11 +98,9 @@ export async function createOffer(
     };
   }
 
-  // -- ÉCO-CONCEPTION: On invalide le cache des pages de listes pour qu'elles affichent la nouvelle offre
   revalidatePath("/(categories)/objets");
   revalidatePath("/(categories)/services");
   revalidatePath("/(categories)/connaissances");
 
-  // On redirige l'utilisateur vers la page principale
   redirect("/");
 }

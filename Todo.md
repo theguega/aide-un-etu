@@ -23,7 +23,31 @@ _Voir sur chaque section objets, services et connaissances de si on filtre par s
 
 ---
 
+## Brainsto random
 
+### Filtres
+
+#### Objets
+- Position
+- Tag : Bricologage, cuisine, culture (livre, films...), éducation (livres ou anciens courts)
+
+#### Services
+- Position
+- Tag : Bricologage, cuisine, culture (livre, films...), éducation (livres ou anciens courts)
+
+#### Connaissances
+- Niveau : primaire, collège, lycée, études supp
+- Matière : maths, sciences, arts, langues, géographie, histoire, économie, finance, politique, etc.
+
+Ou alors type d'étude : bac pro, commerce, école d'ingé, médecine....
+
+
+### Features 
+
+- Un mailer pour contacter directement le.a resp d'une offre depuis le site
+
+
+---
 
 
 

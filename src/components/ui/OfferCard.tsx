@@ -20,7 +20,6 @@ const formatDate = (date: Date) => {
 export async function OfferCard({ offer }: OfferCardProps) {
   const session = await getServerSession(authOptions);
   const offerUrl = `/offre/${offer.id}`;
-  console.log(offer);
 
   return (
     <article className="relative flex flex-col h-full bg-surface border border-theme rounded-xl p-6 transition-shadow duration-200 hover:shadow-lg focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2">

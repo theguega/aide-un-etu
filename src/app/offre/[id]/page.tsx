@@ -1,4 +1,4 @@
-// src/app/offre/[id]/page.tsx
+"use client";
 
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
@@ -16,11 +16,7 @@ const formatDate = (date: Date) => {
   }).format(date);
 };
 
-export default async function OfferDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function OfferDetailPage({ params }: { params: { id: string } }) {
   const offer = await prisma.offer.findUnique({
     where: { id: params.id },
     include: { author: true },
@@ -34,18 +30,39 @@ export default async function OfferDetailPage({
   const isOwner = session?.user?.id === offer.author.id;
 
   return (
-    <main className="container mx-auto max-w-4xl py-8 px-2 md:px-0">
-      {/* HEADER VISUEL */}
+    <main className="container mx-auto max-w-6xl py-8 px-2 md:px-0">
+      {/* Bouton retour */}
+      <div className="mb-6">
+        <Link
+          href="/objets"
+          className="inline-flex items-center text-accent hover:underline font-semibold"
+          aria-label="Retour à la liste des objets"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 mr-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Retour à la liste
+        </Link>
+      </div>
+
       <section className="relative mb-10">
         <div className="h-32 md:h-40 w-full rounded-2xl bg-surface flex items-end overflow-hidden shadow-sm">
           <div className="p-6 md:p-8">
-            <span className="inline-block bg-accent text-background font-semibold px-4 py-1 rounded-full text-xs mb-2 shadow-sm">
-              {offer.type.charAt(0) + offer.type.slice(1).toLowerCase()}
+            <span className="inline-block bg-accent text-background font-semibold px-4 py-1 rounded-full text-sm md:text-xs mb-2 shadow-sm">
+              {offer.type.charAt(0).toUpperCase() + offer.type.slice(1).toLowerCase()}
             </span>
             <h1 className="text-3xl md:text-4xl font-extrabold text-foreground drop-shadow-sm">
               {offer.title}
             </h1>
-            <div className="flex items-center gap-2 mt-2 text-xs text-foreground/70">
+            <div className="flex items-center gap-2 mt-2 text-sm md:text-base text-foreground/70">
               <svg
                 width="16"
                 height="16"
@@ -67,45 +84,37 @@ export default async function OfferDetailPage({
         </div>
       </section>
 
-      <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-        {/* Main Content Column (Offer Details) */}
-        <div className="md:col-span-2">
-          <article>
-            {/* TAGS */}
-            {offer.tags && offer.tags.length > 0 && (
-              <div className="mb-4 flex flex-wrap gap-2">
-                {offer.tags.split(",").map((tag) => (
-                  <span
-                    key={tag}
-                    className="bg-surface text-foreground/70 font-medium px-3 py-1 rounded-full text-xs"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
+      <div className="grid md:grid-cols-6 gap-8 lg:gap-12">
+        <div className="md:col-span-4 text-lg leading-relaxed">
+          {offer.tags && (
+            <div className="mb-6 flex flex-wrap gap-3">
+              {offer.tags.split(",").map((tag) => (
+                <span
+                  key={tag}
+                  className="bg-surface text-foreground/80 font-medium px-4 py-1 rounded-full text-sm"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
 
-            {/* DESCRIPTION */}
-            <section className="bg-surface rounded-xl shadow-sm border border-theme p-6 mb-8">
-              <h2 className="text-xl font-bold mb-4 text-accent">
-                Description
-              </h2>
-              <div className="text-base leading-relaxed text-foreground space-y-4">
-                {offer.description.split("\n").map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
-                ))}
-              </div>
-            </section>
-          </article>
+          <section className="bg-surface rounded-xl shadow-sm border border-theme p-8 mb-10">
+            <h2 className="text-2xl font-bold mb-6 text-accent">Description</h2>
+            <div className="space-y-6 text-foreground">
+              {offer.description.split("\n").map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))}
+            </div>
+          </section>
         </div>
 
-        {/* SIDEBAR AUTEUR & CONTACT */}
-        <aside className="md:col-span-1">
-          <div className="sticky top-24 bg-surface p-6 rounded-2xl border border-theme shadow-md">
-            <h2 className="text-lg font-bold mb-4 text-accent flex items-center gap-2">
+        <aside className="md:col-span-2">
+          <div className="sticky top-24 bg-surface p-8 rounded-2xl border border-theme shadow-md flex flex-col">
+            <h2 className="text-xl font-bold mb-6 text-accent flex items-center gap-3">
               <svg
-                width="22"
-                height="22"
+                width="24"
+                height="24"
                 fill="none"
                 className="text-accent"
                 viewBox="0 0 24 24"
@@ -134,68 +143,91 @@ export default async function OfferDetailPage({
               Proposé par
             </h2>
 
-            {/* --- Author's Identity --- */}
-            <div className="flex items-center gap-4 mb-4">
-              {/* Uncomment si image disponible */}
+            <div className="flex items-center gap-5 mb-6">
+              {/* Optionnel : image de profil si dispo */}
               {/* {offer.author.image && (
                 <img
                   src={offer.author.image}
                   alt={`Photo de profil de ${offer.author.pseudo}`}
-                  className="w-14 h-14 rounded-full border border-blue-200 shadow-sm"
+                  className="w-16 h-16 rounded-full border border-blue-200 shadow-sm"
                 />
               )} */}
               <div>
-                <p className="text-base font-semibold text-foreground">
+                <p className="text-lg font-semibold text-foreground">
                   {offer.author.pseudo}
                 </p>
-                <span className="inline-block bg-accent text-background font-medium px-2 py-0.5 rounded-full text-xs mt-1">
+                <span className="inline-block bg-accent text-background font-medium px-3 py-1 rounded-full text-sm mt-1">
                   {offer.author.city}, {offer.author.postalCode}
                 </span>
               </div>
             </div>
 
-            {/* --- Author's personal description --- */}
             {offer.author.description && (
-              <blockquote className="text-sm text-foreground mb-6 italic border-l-4 border-theme pl-4">
+              <blockquote className="text-base text-foreground mb-8 italic border-l-4 border-theme pl-5">
                 {offer.author.description}
               </blockquote>
             )}
 
-            {/* --- Author's Contact Information (with privacy logic) --- */}
-            <div className="space-y-4">
-              <h3 className="text-md font-semibold text-accent">
-                Contacter {offer.author.pseudo}
-              </h3>
               {isOwner ? (
-                <div className="text-sm text-accent p-3 bg-surface rounded-md border border-theme text-center">
-                  C'est votre annonce.
+                <div className="mb-4 space-y-5">
+                  <div className="text-base text-accent p-4 bg-surface rounded-md border-4 border-theme text-center font-semibold">
+                    C'est votre annonce.
+                  </div>
                 </div>
               ) : session ? (
-                // <-- User's contact info, shown only to logged-in users -->
-                <div className="text-sm space-y-2">
-                  <p>
-                    <strong>Email :</strong> {offer.author.email}
-                  </p>
-                  {offer.author.phone && (
+                <div className="mb-8 space-y-5">
+                  <div className="text-base space-y-3">
+                    <h3 className="text-lg font-semibold text-accent">
+                      Contacter {offer.author.pseudo}
+                    </h3>
                     <p>
-                      <strong>Téléphone :</strong> {offer.author.phone}
+                      <strong>Email :</strong> {offer.author.email}
                     </p>
-                  )}
+                    {offer.author.phone && (
+                      <p>
+                        <strong>Téléphone :</strong> {offer.author.phone}
+                      </p>
+                    )}
+                  </div>
                 </div>
               ) : (
-                <div className="text-center p-4 border-2 border-dashed border-theme rounded-xl bg-background">
-                  <p className="text-sm text-accent">
-                    <Link
-                      href="/auth/signin"
-                      className="font-bold text-accent hover:underline"
-                    >
-                      Connectez-vous
-                    </Link>{" "}
-                    pour voir les informations de contact.
-                  </p>
+                <div className="mb-8 space-y-5">
+                  <div className="text-center p-6 border-2 border-dashed border-theme rounded-xl bg-background">
+                    <p className="text-base text-accent">
+                      <Link
+                        href="/auth/signin"
+                        className="font-bold text-accent hover:underline"
+                      >
+                        Connectez-vous
+                      </Link>{" "}
+                      pour voir les informations de contact.
+                    </p>
+                  </div>
                 </div>
               )}
-            </div>
+
+            {isOwner && (
+              <form
+                action={`/api/delete-offer?id=${offer.id}`}
+                method="POST"
+                className="mt-auto"
+              >
+                <button
+                  type="submit"
+                  className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-5 cursor-pointer rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  aria-label="Supprimer cette offre"
+                  onClick={(e) => {
+                    if (
+                      !confirm("Êtes-vous sûr de vouloir supprimer cette offre ?")
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
+                >
+                  Supprimer l'offre
+                </button>
+              </form>
+            )}
           </div>
         </aside>
       </div>

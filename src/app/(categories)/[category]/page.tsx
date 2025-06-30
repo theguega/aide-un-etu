@@ -77,14 +77,7 @@ export default async function CategoryPage({
 
   return (
     <section aria-labelledby="page-title">
-      <header className="mb-8">
-        <h1 id="page-title" className="text-3xl font-bold">
-          {categoryInfo.title}
-        </h1>
-      </header>
-
       <FilterBar />
-
       <div className="mt-8">
         {offers.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

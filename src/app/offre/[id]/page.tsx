@@ -18,22 +18,28 @@ const formatDate = (date: Date) => {
 };
 
 // Composant pour l'image de profil optimisée
-const ProfileImage = ({ 
-  src, 
-  alt, 
+const ProfileImage = ({
+  src,
+  alt,
   size = 64,
-  className = "" 
-}: { 
-  src?: string | null; 
-  alt: string; 
+  className = "",
+}: {
+  src?: string | null;
+  alt: string;
   size?: number;
   className?: string;
 }) => {
   if (!src) {
     // Avatar par défaut avec initiales
-    const initials = alt.split(' ').map(name => name[0]).join('').substring(0, 2).toUpperCase();
+    const nameOnly = alt.replace(/^Photo de profil de \s*/i, "");
+    const initials = nameOnly
+      .split(" ")
+      .map((name) => name[0])
+      .join("")
+      .substring(0, 2)
+      .toUpperCase();
     return (
-      <div 
+      <div
         className={`flex items-center justify-center bg-accent text-background font-bold rounded-full ${className}`}
         style={{ width: size, height: size, fontSize: `${size / 3}px` }}
       >
@@ -43,7 +49,9 @@ const ProfileImage = ({
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-full border-2 border-theme shadow-sm ${className}`}>
+    <div
+      className={`relative overflow-hidden rounded-full border-2 border-theme shadow-sm ${className}`}
+    >
       <Image
         src={src}
         alt={alt}
@@ -59,18 +67,20 @@ const ProfileImage = ({
 };
 
 // Composant pour l'image de l'offre optimisée
-const OfferImage = ({ 
-  src, 
-  alt, 
-  className = "" 
-}: { 
-  src?: string | null; 
-  alt: string; 
+const OfferImage = ({
+  src,
+  alt,
+  className = "",
+}: {
+  src?: string | null;
+  alt: string;
   className?: string;
 }) => {
   if (!src) {
     return (
-      <div className={`bg-surface border-2 border-dashed border-theme flex items-center justify-center ${className}`}>
+      <div
+        className={`bg-surface border-2 border-dashed border-theme flex items-center justify-center ${className}`}
+      >
         <div className="text-center text-foreground/60">
           <svg
             className="mx-auto h-12 w-12 mb-2"
@@ -519,7 +529,7 @@ export default async function OfferDetailPage({
                 <div className="text-center p-6 border-2 border-dashed border-theme rounded-xl bg-background">
                   <p className="text-base text-accent">
                     <Link
-                      href="/auth/signin"
+                      href="/api/auth/signin"
                       className="font-bold text-accent hover:underline"
                     >
                       Connectez-vous

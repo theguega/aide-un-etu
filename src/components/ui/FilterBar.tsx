@@ -123,7 +123,7 @@ export function FilterBar() {
       <button type="submit" className="hidden" aria-hidden="true"></button>
 
       {/* Info "Appuyer sur Entrée" */}
-      <p className="text-sm text-gray-500 w-full mt-2">
+      <p className="text-sm text-gray-500 w-full mt-2" aria-live="polite">
         Appuyez sur <strong>Entrée</strong> pour lancer la recherche.
       </p>
     </form>

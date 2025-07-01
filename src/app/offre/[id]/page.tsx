@@ -1,5 +1,6 @@
 "use server";
 
+import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -15,6 +16,33 @@ const formatDate = (date: Date) => {
     minute: "2-digit",
   }).format(date);
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const resolvedParams = await params;
+  const offer = await prisma.offer.findUnique({
+    where: { id: resolvedParams.id },
+    include: { author: true },
+  });
+
+  const author = await prisma.user.findUnique({
+    where: { id: offer?.authorId },
+  });
+
+  if (!offer) {
+    return {
+      title: "Offre introuvable",
+    };
+  }
+
+  return {
+    title: `${offer.title} ${offer.city} - ${author?.pseudo}`,
+    description: offer.description?.slice(0, 150) || "Détail de l'annonce",
+  };
+}
 
 export default async function OfferDetailPage({
   params,

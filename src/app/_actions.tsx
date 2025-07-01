@@ -156,7 +156,7 @@ export async function createOffer(
         tags: validatedFields.data.tags,
         price: validatedFields.data.price
           ? parseFloat(validatedFields.data.price)
-          : null,
+          : 0,
         photoUrl: photoUrl,
         authorId: userId,
       },

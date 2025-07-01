@@ -216,7 +216,7 @@ const ImpactCard = ({ type }: { type: string }) => {
   const impact = getImpactData();
 
   return (
-    <section className="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl shadow-sm border border-green-200 p-8 mb-10">
+    <section className="bg-gradient-to-br from-green-200 to-blue-200 rounded-xl shadow-sm border border-green-200 p-8 mb-10">
       <div className="flex items-center gap-3 mb-6">
         <span className="text-3xl">{impact.icon}</span>
         <h2 className="text-2xl font-bold text-green-900800">{impact.title}</h2>
@@ -239,13 +239,13 @@ const ImpactCard = ({ type }: { type: string }) => {
         ))}
       </div>
 
-      <div className="bg-green-100 rounded-lg p-4 mb-4">
-        <p className="text-sm text-green-800 font-medium">
+      <div className="bg-green-50 rounded-lg p-4 mb-4">
+        <p className="text-sm text-black-800 font-medium">
           💡 <strong>Le saviez-vous ?</strong> {impact.tip}
         </p>
       </div>
 
-      <div className="text-xs text-gray-600">
+      <div className="text-sm text-gray-600">
         <a
           href={impact.source.url}
           target="_blank"

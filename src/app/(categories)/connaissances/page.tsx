@@ -36,7 +36,7 @@ export default async function ConnaissancesPage({
     : [];
 
   const whereClause: Prisma.OfferWhereInput = {
-    type: OfferType.OBJET,
+    type: OfferType.CONNAISSANCE,
     ...(postalCodeFilter && { postalCode: postalCodeFilter }),
     ...(itemName && {
       title: {

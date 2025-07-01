@@ -36,7 +36,7 @@ export default async function ServicesPage({
     : [];
 
   const whereClause: Prisma.OfferWhereInput = {
-    type: OfferType.OBJET,
+    type: OfferType.SERVICE,
     ...(postalCodeFilter && { postalCode: postalCodeFilter }),
     ...(itemName && {
       title: {

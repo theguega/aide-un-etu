@@ -7,6 +7,7 @@ import { signIn } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Camera, X } from "lucide-react";
+import Image from "next/image";
 
 function CompleteProfileForm() {
   const { data: session } = useSession();
@@ -175,7 +176,7 @@ function CompleteProfileForm() {
           <div className="relative">
             {photoPreview ? (
               <div className="relative">
-                <img
+                <Image
                   src={photoPreview}
                   alt="Aperçu de la photo de profil"
                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"

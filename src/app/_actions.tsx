@@ -138,7 +138,7 @@ export async function createOffer(
     } catch (error) {
       return {
         message: "Erreur lors de l'upload de la photo.",
-        errors: { photo: ["Impossible de sauvegarder la photo."] },
+        errors: { photo: ["Impossible de sauvegarder la photo."+error] },
       };
     }
   }

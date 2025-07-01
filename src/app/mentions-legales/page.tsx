@@ -55,7 +55,7 @@ export default function MentionsLegalesPage() {
           </h2>
           <p>
             Ce projet est hébergé sur l&apos;infrastructure GitLab de
-            l'Université de Technologie de Compiègne (UTC), dans un souci de
+            l&lsquo;Université de Technologie de Compiègne (UTC), dans un souci de
             souveraineté numérique et de réduction de l&apos;empreinte carbone
             liée au transport des données.
           </p>

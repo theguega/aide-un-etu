@@ -31,14 +31,14 @@ export default function ConfidentialitePage() {
             1. Données collectées
           </h2>
           <p>
-            Dans le cadre de l'utilisation de la plateforme "Aide-un-étudiant",
+            Dans le cadre de l&lsquo;utilisation de la plateforme &lsquo;Aide-un-étudiant&lsquo;,
             nous collectons les données suivantes, dans le respect du principe
             de minimisation des données :
           </p>
           <ul className="list-disc list-inside mt-4 space-y-2">
             <li>
-              <strong>Données d'authentification :</strong> Les informations
-              fournies par le service d'authentification de l'UTC (nom, prénom,
+              <strong>Données d&lsquo;authentification :</strong> Les informations
+              fournies par le service d&lsquo;authentification de l&lsquo;UTC (nom, prénom,
               e-mail).
             </li>
             <li>
@@ -52,9 +52,9 @@ export default function ConfidentialitePage() {
             </li>
           </ul>
           <p className="mt-4">
-            Nous n'utilisons aucun cookie de suivi ou d'analyse tiers. Les seuls
+            Nous n&lsquo;utilisons aucun cookie de suivi ou d&lsquo;analyse tiers. Les seuls
             cookies utilisés sont strictement nécessaires au fonctionnement de
-            la session d'authentification.
+            la session d&lsquo;authentification.
           </p>
         </section>
 
@@ -85,11 +85,11 @@ export default function ConfidentialitePage() {
             id="duree-title"
             className="text-2xl font-semibold mb-4 border-b pb-2"
           >
-            3. Durée de conservation et Droit à l'oubli
+            3. Durée de conservation et Droit à l&lsquo;oubli
           </h2>
           <p>
             Nous appliquons une politique de conservation des données stricte,
-            fondée sur le principe de minimisation et le droit à l'oubli :
+            fondée sur le principe de minimisation et le droit à l&lsquo;oubli :
           </p>
           <ul className="list-disc list-inside mt-4 space-y-3">
             <li>
@@ -101,7 +101,7 @@ export default function ConfidentialitePage() {
             <li>
               <strong>Suppression automatique pour inactivité :</strong> Pour ne
               pas conserver indéfiniment les données des utilisateurs inactifs,
-              tout compte n'ayant enregistré aucune connexion pendant une
+              tout compte n&lsquo;ayant enregistré aucune connexion pendant une
               période continue de six (6) mois sera automatiquement et
               définitivement supprimé de nos systèmes.
             </li>

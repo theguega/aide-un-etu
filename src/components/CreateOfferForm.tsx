@@ -6,6 +6,7 @@ import { createOffer, type FormState } from "@/app/_actions";
 import { OfferType } from "@prisma/client";
 import { Camera, X } from "lucide-react";
 import { useRef } from "react";
+import Image from "next/image";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -25,7 +26,6 @@ function SubmitButton() {
 export function CreateOfferForm() {
   const initialState: FormState = { message: "", errors: {} };
   const [state, dispatch] = useActionState(createOffer, initialState);
-  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -36,20 +36,17 @@ export function CreateOfferForm() {
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setSelectedPhoto(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         setPhotoPreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
     } else {
-      setSelectedPhoto(null);
       setPhotoPreview(null);
     }
   };
 
   const removePhoto = () => {
-    setSelectedPhoto(null);
     setPhotoPreview(null);
     const photoInput = document.getElementById("photo") as HTMLInputElement;
     if (photoInput) photoInput.value = "";
@@ -72,7 +69,7 @@ export function CreateOfferForm() {
         <div className="relative">
           {photoPreview ? (
             <div className="relative">
-              <img
+              <Image
                 src={photoPreview}
                 alt="Aperçu de la photo"
                 className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"

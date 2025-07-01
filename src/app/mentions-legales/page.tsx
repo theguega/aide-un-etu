@@ -6,8 +6,6 @@ export const metadata: Metadata = {
   title: "Mentions Légales - Aide-un-étudiant",
   description:
     "Consultez les mentions légales de la plateforme Aide-un-étudiant.",
-  // -- ÉCO-CONCEPTION: On indique aux robots de ne pas indexer cette page,
-  // car elle n'a pas de valeur de contenu pour les moteurs de recherche.
   robots: {
     index: false,
     follow: false,

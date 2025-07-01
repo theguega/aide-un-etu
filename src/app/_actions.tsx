@@ -27,7 +27,6 @@ const CreateOfferSchema = z.object({
     .regex(/^\d{5}$/, { message: "Le code postal doit contenir 5 chiffres." }),
 });
 
-// Validation du fichier photo
 const PhotoSchema = z.object({
   size: z.number().max(5 * 1024 * 1024, { message: "La photo ne doit pas dépasser 5MB." }),
   type: z.string().refine(
@@ -51,21 +50,17 @@ export type FormState = {
 };
 
 async function savePhoto(file: File): Promise<string> {
-  // Créer le dossier s'il n'existe pas
   const uploadDir = path.join(process.cwd(), "public/uploads/offer-photos");
   await mkdir(uploadDir, { recursive: true });
 
-  // Générer un nom unique pour le fichier
   const timestamp = Date.now();
   const fileName = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "")}`;
   const filePath = path.join(uploadDir, fileName);
 
-  // Convertir le fichier en buffer et l'écrire
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
   await writeFile(filePath, buffer);
 
-  // Retourner l'URL relative pour la base de données
   return `/uploads/offer-photos/${fileName}`;
 }
 
@@ -95,7 +90,6 @@ export async function createOffer(
     };
   }
 
-  // Validation des champs du formulaire
   const validatedFields = CreateOfferSchema.safeParse({
     title: formData.get("title"),
     description: formData.get("description"),
@@ -113,12 +107,10 @@ export async function createOffer(
     };
   }
 
-  // Gestion de la photo (optionnelle)
   let photoUrl: string | null = null;
   const photoFile = formData.get("photo") as File;
   
   if (photoFile && photoFile.size > 0) {
-    // Validation de la photo
     const photoValidation = PhotoSchema.safeParse({
       size: photoFile.size,
       type: photoFile.type,

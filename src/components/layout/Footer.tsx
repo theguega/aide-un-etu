@@ -6,7 +6,6 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    // -- ACCESSIBILITÉ: La balise <footer> est un landmark de fin de page --
     <footer className="bg-white text-black border-t border-[color:var(--border)] mt-16">
       <div className="mx-auto px-8 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">

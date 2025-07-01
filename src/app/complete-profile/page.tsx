@@ -57,13 +57,11 @@ function CompleteProfileForm() {
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Vérifier le type de fichier
       if (!file.type.startsWith("image/")) {
         alert("Veuillez sélectionner un fichier image valide.");
         return;
       }
 
-      // Vérifier la taille (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert("La taille de l'image ne doit pas dépasser 5MB.");
         return;
@@ -71,7 +69,6 @@ function CompleteProfileForm() {
 
       setProfilePhoto(file);
 
-      // Créer une preview
       const reader = new FileReader();
       reader.onload = (event) => {
         setPhotoPreview(event.target?.result as string);
@@ -123,7 +120,6 @@ function CompleteProfileForm() {
     try {
       let profilePhotoUrl = null;
 
-      // Upload de la photo si présente
       if (profilePhoto) {
         profilePhotoUrl = await uploadPhoto(profilePhoto);
         if (!profilePhotoUrl) {
@@ -133,7 +129,6 @@ function CompleteProfileForm() {
         }
       }
 
-      // Envoi des données du profil
       const profileData = {
         ...formData,
         profilePhotoUrl,

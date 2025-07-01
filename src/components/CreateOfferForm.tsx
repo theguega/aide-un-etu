@@ -316,7 +316,7 @@ export function CreateOfferForm() {
         </div>
       </div>
 
-      {/* Case à cocher Conditions Générales */}
+      {/* Case à cocher CGU */}
       <div className="flex items-start space-x-3">
         <input
           id="acceptTerms"
@@ -335,7 +335,6 @@ export function CreateOfferForm() {
         </label>
       </div>
 
-      {/* Message d'erreur pour la case (si besoin) */}
       <div id="acceptTerms-error" aria-live="polite" aria-atomic="true" />
 
       {/* Bouton */}

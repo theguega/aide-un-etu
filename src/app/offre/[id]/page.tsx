@@ -17,7 +17,6 @@ const formatDate = (date: Date) => {
   }).format(date);
 };
 
-// Composant pour l'image de profil optimisée
 const ProfileImage = ({
   src,
   alt,
@@ -30,7 +29,6 @@ const ProfileImage = ({
   className?: string;
 }) => {
   if (!src) {
-    // Avatar par défaut avec initiales
     const nameOnly = alt.replace(/^Photo de profil de \s*/i, "");
     const initials = nameOnly
       .split(" ")
@@ -66,7 +64,6 @@ const ProfileImage = ({
   );
 };
 
-// Composant pour l'image de l'offre optimisée
 const OfferImage = ({
   src,
   alt,

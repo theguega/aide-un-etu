@@ -38,7 +38,7 @@ export function Header() {
             Aide-un-étu
           </Link>
 
-          {/* Logo SVG au milieu (une planete) */}
+          {/* Logo SVG au milieu (la planete) */}
           <Link
             href="/"
             className="flex items-center justify-center text-3xl font-extrabold text-black whitespace-nowrap"

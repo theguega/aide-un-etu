@@ -1,6 +1,5 @@
 "use server";
 
-import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -15,6 +14,142 @@ const formatDate = (date: Date) => {
     hour: "2-digit",
     minute: "2-digit",
   }).format(date);
+};
+
+const ImpactCard = ({ type }: { type: string }) => {
+  const getImpactData = () => {
+    switch (type.toLowerCase()) {
+      case "objet":
+        return {
+          icon: "🌱",
+          title: "Impact environnemental évité",
+          stats: [
+            {
+              label: "Émissions CO2 évitées",
+              value: "~6.5 kg CO2",
+              description: "par rapport à un achat neuf moyen"
+            },
+            {
+              label: "Économie réalisée",
+              value: "40-70%",
+              description: "du prix neuf en moyenne"
+            }
+          ],
+          source: {
+            text: "Source : ADEME - Impact environnemental du numérique",
+            url: "https://www.ademe.fr/sites/default/files/assets/documents/guide-pratique-face-cachee-numerique.pdf"
+          },
+          tip: "En choisissant la seconde main, vous participez à l'économie circulaire et réduisez les déchets électroniques."
+        };
+      
+      case "service":
+        return {
+          icon: "💰",
+          title: "Économies réalisées",
+          stats: [
+            {
+              label: "Économie moyenne",
+              value: "30-50%",
+              description: "par rapport aux services professionnels moyens"
+            },
+            {
+              label: "Échange de compétences",
+              value: "Gratuit",
+              description: "possibilité de troc de services"
+            }
+          ],
+          source: {
+            text: "Source : Étude sur l'économie collaborative - INSEE",
+            url: "https://www.insee.fr/fr/statistiques/4238589"
+          },
+          tip: "Les services entre particuliers favorisent le lien social et l'entraide locale."
+        };
+      
+      case "connaissance":
+        return {
+          icon: "🧠",
+          title: "Valeur de l'apprentissage",
+          stats: [
+            {
+              label: "Coût formation évité",
+              value: "50-200€",
+              description: "par rapport aux formations payantes en moyenne"
+            },
+            {
+              label: "Apprentissage personnalisé",
+              value: "100%",
+              description: "adapté à vos besoins spécifiques"
+            }
+          ],
+          source: {
+            text: "Source : Observatoire de la formation - Centre Inffo",
+            url: "https://www.centre-inffo.fr/"
+          },
+          tip: "Partager ses connaissances renforce les compétences et crée du lien social."
+        };
+      
+      default:
+        return {
+          icon: "♻️",
+          title: "Impact positif",
+          stats: [
+            {
+              label: "Réduction des déchets",
+              value: "Significative",
+              description: "en donnant une seconde vie"
+            },
+            {
+              label: "Économie locale",
+              value: "Renforcée",
+              description: "par les échanges de proximité"
+            }
+          ],
+          source: {
+            text: "Source : ADEME - Guide de l'économie circulaire",
+            url: "https://www.ademe.fr/economie-circulaire"
+          },
+          tip: "Chaque geste compte pour un mode de vie plus durable."
+        };
+    }
+  };
+
+  const impact = getImpactData();
+
+  return (
+    <section className="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl shadow-sm border border-green-200 p-8 mb-10">
+      <div className="flex items-center gap-3 mb-6">
+        <span className="text-3xl">{impact.icon}</span>
+        <h2 className="text-2xl font-bold text-green-800">{impact.title}</h2>
+      </div>
+      
+      <div className="grid md:grid-cols-2 gap-6 mb-6">
+        {impact.stats.map((stat, index) => (
+          <div key={index} className="bg-white rounded-lg p-4 border border-green-100">
+            <div className="text-2xl font-bold text-green-700 mb-1">{stat.value}</div>
+            <div className="text-sm font-semibold text-gray-700 mb-1">{stat.label}</div>
+            <div className="text-xs text-gray-600">{stat.description}</div>
+          </div>
+        ))}
+      </div>
+      
+      <div className="bg-green-100 rounded-lg p-4 mb-4">
+        <p className="text-sm text-green-800 font-medium">
+          💡 <strong>Le saviez-vous ?</strong> {impact.tip}
+        </p>
+      </div>
+      
+      <div className="text-xs text-gray-600">
+        <a 
+          href={impact.source.url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="hover:text-green-700 hover:underline"
+        >
+          {impact.source.text} ↗
+        </a>
+      </div>
+    </section>
+  );
 };
 
 export async function generateMetadata({
@@ -62,14 +197,23 @@ export default async function OfferDetailPage({
   const session = await getServerSession(authOptions);
   const isOwner = session?.user?.id === offer.author.id;
 
+  const type = offer.type.toLowerCase(); // 'objet', 'connaissance', 'service'
+  const backLinkMap: Record<string, { href: string; label: string }> = {
+    objet: { href: "/objets", label: "Retour à la liste des objets" },
+    connaissance: { href: "/connaissances", label: "Retour à la liste des connaissances" },
+    service: { href: "/services", label: "Retour à la liste des services" },
+  };
+
+  const backLink = backLinkMap[type] ?? { href: "/", label: "Retour à l'accueil" };
+
   return (
     <main className="container mx-auto max-w-6xl px-2 md:px-0">
       {/* Bouton retour */}
       <div className="mb-6">
         <Link
-          href="/objets"
+          href={backLink.href}
           className="inline-flex items-center text-accent hover:underline font-semibold"
-          aria-label="Retour à la liste des objets"
+          aria-label={backLink.label}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -145,6 +289,8 @@ export default async function OfferDetailPage({
               ))}
             </div>
           </section>
+
+          <ImpactCard type={offer.type} />
         </div>
 
         <aside className="md:col-span-2">

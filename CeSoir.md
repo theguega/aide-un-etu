@@ -1,5 +1,3 @@
-Metadata pour chaque offre etc...
-
 Page avec mes offres, le Co2 économisé et le nb personnes aidées
 
 Pouvoir mettre un statut emprunté sur les objets sur une certaine date

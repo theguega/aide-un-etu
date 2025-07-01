@@ -13,12 +13,12 @@ export function FilterBar() {
   const [tags, setTags] = useState(searchParams?.get("tags") ?? "");
 
   const getLabelAndPlaceholder = () => {
-    if (pathname.startsWith("/services")) {
+    if (pathname?.startsWith("/services")) {
       return {
         label: "Nom du service",
         placeholder: "cours de maths, aide au ménage, etc.",
       };
-    } else if (pathname.startsWith("/connaissances")) {
+    } else if (pathname?.startsWith("/connaissances")) {
       return {
         label: "Nom de la connaissance",
         placeholder: "électronique, couture, jardinage, etc.",

@@ -28,11 +28,11 @@ export function Header() {
   return (
     <header className="bg-white border-b border-gray-300 sticky top-0 z-10">
       <div className="w-full px-8">
-        <div className="flex flex-row items-center justify-between py-4 flex-wrap gap-4">
+        <div className="flex flex-row items-center sm:justify-between justify-center py-4 flex-wrap gap-4 w-full">
           {/* Nom du site à gauche */}
           <Link
             href="/"
-            className="hidden md:block text-3xl font-extrabold text-black whitespace-nowrap"
+            className="max-sm:hidden md:block text-3xl font-extrabold text-black whitespace-nowrap"
             aria-label="Retour à la page d'accueil de Aide-un-étudiant"
           >
             Aide-un-étu
@@ -69,11 +69,11 @@ export function Header() {
           {/* Navigation / boutons à droite */}
           <nav
             aria-label="Navigation principale"
-            className="flex items-center gap-4 flex-wrap justify-end"
+            className="flex items-center gap-4"
           >
             <Link
               href="/creer-offre"
-              className="text-black font-semibold hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-offset-2 transition-colors whitespace-nowrap"
+              className="flex justify-center text-black font-semibold hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-offset-2 transition-colors whitespace-nowrap"
             >
               Créer une offre
               <span id="creer-offre-desc" className="sr-only">
@@ -104,7 +104,7 @@ export function Header() {
                     redirect: true,
                   })
                 }
-                className="bg-green-700 text-white px-4 py-2 rounded-md whitespace-nowrap
+                className="flex justify-center bg-green-700 text-white px-4 py-2 rounded-md whitespace-nowrap
                   hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-offset-2 transition-colors"
                 aria-label="Se connecter"
               >

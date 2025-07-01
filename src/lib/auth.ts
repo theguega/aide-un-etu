@@ -91,6 +91,13 @@ export const authOptions: NextAuthOptions = {
           const pseudo = encodeURIComponent(user.name || "");
           return `/complete-profile?mail=${email}&pseudo=${pseudo}`;
         }
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        await prisma.offer.deleteMany({
+          where: {
+            createdAt: { lt: sixMonthsAgo },
+          },
+        });
 
         return true;
       } catch (error) {

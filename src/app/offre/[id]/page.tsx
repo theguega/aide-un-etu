@@ -35,7 +35,7 @@ export default async function OfferDetailPage({
   const isOwner = session?.user?.id === offer.author.id;
 
   return (
-    <main className="container mx-auto max-w-6xl py-8 px-2 md:px-0">
+    <main className="container mx-auto max-w-6xl px-2 md:px-0">
       {/* Bouton retour */}
       <div className="mb-6">
         <Link
@@ -223,18 +223,9 @@ export default async function OfferDetailPage({
                 className="mt-auto"
               >
                 <button
-                  type="submit"
+                  //type="submit"
                   className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-5 cursor-pointer rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                   aria-label="Supprimer cette offre"
-                  onClick={(e) => {
-                    if (
-                      !confirm(
-                        "Êtes-vous sûr de vouloir supprimer cette offre ?",
-                      )
-                    ) {
-                      e.preventDefault();
-                    }
-                  }}
                 >
                   Supprimer l&apos;offre
                 </button>

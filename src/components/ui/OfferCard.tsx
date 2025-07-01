@@ -29,7 +29,6 @@ export async function OfferCard({ offer }: OfferCardProps) {
           aria-label="Supprimer l'offre"
           href={"/delete-offer?id=" + offer.id}
           className="absolute top-6 right-6 text-gray-500 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 rounded flex items-center gap-1 z-10"
-          onClick={(e) => e.stopPropagation()} // stop propagation si tu veux gérer un onClick plus bas
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

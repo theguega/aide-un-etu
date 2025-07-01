@@ -50,8 +50,14 @@ export function Header() {
               viewBox="0 0 24 24"
               strokeWidth="1.5"
               stroke="currentColor"
+              role="img"
+              aria-labelledby="image de planète"
               className="size-10 h-10 w-10 text-green-700 hover:text-green-800 transition-colors"
             >
+              <title id="planetTitle">Icône de planète</title>
+              <desc id="planetDesc">
+                Une planète verte représentant l&apos;engamenent de notre site
+              </desc>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

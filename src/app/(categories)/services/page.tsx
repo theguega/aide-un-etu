@@ -2,13 +2,11 @@ import { FilterBar } from "@/components/ui/FilterBar";
 import { OfferCard } from "@/components/ui/OfferCard";
 import { prisma } from "@/lib/prisma";
 import { OfferType, Offer } from "@prisma/client";
-import { notFound } from "next/navigation";
 import { Prisma } from "@prisma/client";
 
 export const metadata = {
-  title: "Aide-un-étudiant - Offres par catégorie",
-  description:
-    "Découvrez les offres d'entraide classées par catégorie : objets, services et connaissances. Trouvez facilement ce dont vous avez besoin ou proposez votre aide.",
+  title: "Services proposés - Aide-un-étudiant",
+  description: "Découvrez les services proposés entre étudiants : aide aux devoirs, cours particuliers, dépannage informatique et bien plus. Trouvez l'aide dont vous avez besoin.",
 };
 
 type OfferWithAuthor = Offer & {
@@ -17,40 +15,17 @@ type OfferWithAuthor = Offer & {
   };
 };
 
-export async function generateStaticParams() {
-  return [
-    { category: "objets" },
-    { category: "services" },
-    { category: "connaissances" },
-  ];
+interface PageProps {
+  params: Promise<{ category: string }>;
+  searchParams?: Promise<Record<string, string | undefined>>;
 }
 
-export default async function CategoryPage({
-  params,
+export default async function ServicesPage({
   searchParams,
-}: {
-  params: { category: string };
-  searchParams?: Record<string, string | undefined>;
-}) {
-  const categoryMap = {
-    objets: { type: OfferType.OBJET, title: "Objets à prêter" },
-    services: { type: OfferType.SERVICE, title: "Services proposés" },
-    connaissances: {
-      type: OfferType.CONNAISSANCE,
-      title: "Connaissances à partager",
-    },
-  };
-
-  const resolvedParams = await params;
+}: PageProps) {
   const resolvedSearchParams = await searchParams;
 
-  const categorySlug = resolvedParams.category;
-  const categoryInfo = categoryMap[categorySlug as keyof typeof categoryMap];
-
-  if (!categoryInfo) notFound();
-
   const postalCodeFilter = resolvedSearchParams?.postalCode;
-
   const tagsQuery = resolvedSearchParams?.tags;
   const tagsFilter = tagsQuery
     ? tagsQuery
@@ -60,7 +35,7 @@ export default async function CategoryPage({
     : [];
 
   const whereClause: Prisma.OfferWhereInput = {
-    type: categoryInfo.type,
+    type: OfferType.SERVICE,
     ...(postalCodeFilter && { postalCode: postalCodeFilter }),
     ...(tagsFilter.length > 0 && {
       AND: tagsFilter.map((tag) => ({
@@ -84,6 +59,9 @@ export default async function CategoryPage({
 
   return (
     <section aria-labelledby="page-title">
+      <h1 id="page-title" className="text-2xl font-bold mb-6">
+        Services proposés
+      </h1>
       <FilterBar />
       <div className="mt-8">
         {offers.length > 0 ? (
@@ -95,7 +73,7 @@ export default async function CategoryPage({
         ) : (
           <div className="text-center py-16 px-4 bg-muted rounded-lg">
             <p className="text-lg font-medium text-foreground">
-              Aucune offre ne correspond à vos critères.
+              Aucun service ne correspond à vos critères.
             </p>
             <p className="text-muted-foreground mt-2">
               Essayez d&apos;élargir votre recherche ou revenez plus tard !

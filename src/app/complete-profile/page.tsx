@@ -2,16 +2,12 @@
 
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export default function CompleteProfilePage() {
-  useEffect(() => {
-    document.title = "Création profil - Aide-un-étudiant";
-  }, []);
-
+function CompleteProfileForm() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
 
@@ -28,8 +24,8 @@ export default function CompleteProfilePage() {
   });
 
   useEffect(() => {
-    const email = searchParams.get("mail");
-    const pseudo = searchParams.get("pseudo");
+    const email = searchParams?.get("mail");
+    const pseudo = searchParams?.get("pseudo");
 
     setFormData((prev) => ({
       ...prev,
@@ -43,10 +39,10 @@ export default function CompleteProfilePage() {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
   };
 
@@ -143,7 +139,7 @@ export default function CompleteProfilePage() {
             name="gender"
             value={formData.gender}
             onChange={handleChange}
-            className="w-full p-2 rounded-2xl border border-gray-300 dark:border-gray-600"
+            className="w-full p-2 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-black"
             aria-describedby="gender-desc"
           >
             <option value="">-- Sélectionnez --</option>
@@ -169,7 +165,7 @@ export default function CompleteProfilePage() {
             value={formData.description}
             onChange={handleChange}
             rows={4}
-            className="w-full p-2 rounded-2xl border border-gray-300 resize-y dark:border-gray-600"
+            className="w-full p-2 rounded-2xl border border-gray-300 resize-y dark:border-gray-600 bg-white dark:bg-black"
           />
         </div>
 
@@ -219,10 +215,10 @@ export default function CompleteProfilePage() {
             id="acceptCGU"
             name="acceptCGU"
             type="checkbox"
-            checked={formData.acceptCGU}
-            onChange={handleChange}
             className="mt-1 mr-2 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
             required
+            checked={formData.acceptCGU}
+            onChange={handleChange}
           />
           <label htmlFor="acceptCGU" className="text-sm select-none">
             J&apos;accepte les{" "}
@@ -259,5 +255,28 @@ export default function CompleteProfilePage() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function CompleteProfilePage() {
+  useEffect(() => {
+    document.title = "Création profil - Aide-un-étudiant";
+  }, []);
+
+  return (
+    <Suspense fallback={
+      <div className="max-w-lg mx-auto p-6 mt-2 bg-white rounded-2xl shadow-xl text-black dark:bg-black dark:text-white border border-gray-300">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-6"></div>
+          <div className="space-y-4">
+            <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded"></div>
+            <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded"></div>
+            <div className="h-20 bg-gray-300 dark:bg-gray-700 rounded"></div>
+          </div>
+        </div>
+      </div>
+    }>
+      <CompleteProfileForm />
+    </Suspense>
   );
 }

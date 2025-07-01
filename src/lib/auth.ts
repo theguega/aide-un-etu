@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
         } else {
           token.email = (profile as Profile | undefined)?.email;
           token.name = (profile as Profile | undefined)?.name;
-          token.id = (profile as Profile | undefined)?.id;
+          token.id = user?.id;
         }
       }
 

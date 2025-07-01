@@ -19,10 +19,11 @@ const formatDate = (date: Date) => {
 export default async function OfferDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const resolvedParams = await params;
   const offer = await prisma.offer.findUnique({
-    where: { id: params.id },
+    where: { id: resolvedParams.id },
     include: { author: true },
   });
 

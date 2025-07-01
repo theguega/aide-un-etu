@@ -8,10 +8,9 @@ export function FilterBar() {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  // -- ÉCO-CONCEPTION: On attend 300ms après que l'utilisateur ait fini de taper pour lancer la recherche --
   const handleFilterChange = useDebouncedCallback(
     (term: string, name: string) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams ?? "");
       if (term) {
         params.set(name, term);
       } else {
@@ -41,7 +40,7 @@ export function FilterBar() {
             placeholder="75001"
             className="p-2 border border-[color:var(--border)] rounded-md text-black bg-white focus:ring-2 focus:ring-[color:var(--accent)] focus:outline-none"
             onChange={(e) => handleFilterChange(e.target.value, "postalCode")}
-            defaultValue={searchParams.get("postalCode")?.toString()}
+            defaultValue={searchParams?.get("postalCode")?.toString()}
           />
         </div>
 
@@ -59,7 +58,7 @@ export function FilterBar() {
             placeholder="bricolage,..."
             className="p-2 border border-[color:var(--border)] rounded-md text-black bg-white focus:ring-2 focus:ring-[color:var(--accent)] focus:outline-none"
             onChange={(e) => handleFilterChange(e.target.value, "tags")}
-            defaultValue={searchParams.get("tags")?.toString()}
+            defaultValue={searchParams?.get("tags")?.toString()}
           />
         </div>
       </fieldset>

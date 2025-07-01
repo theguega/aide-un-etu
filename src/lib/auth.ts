@@ -1,65 +1,99 @@
 import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./prisma";
 import type { Profile } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    {
+    CredentialsProvider({
       id: "custom-provider",
       name: "Connexion Étudiante",
-      type: "oauth",
-      clientId: process.env.MY_CLIENT_ID!,
-      clientSecret: process.env.MY_CLIENT_SECRET!,
-      authorization: {
-        url: process.env.OAUTH_AUTHORIZATION_URL!,
-        params: {
-          scope: process.env.OAUTH_SCOPES!,
-          response_type: "code",
+      credentials: {
+        email: { 
+          label: "Email", 
+          type: "email", 
+          placeholder: "ton-email@exemple.com" 
         },
-      },
-      token: {
-        url: process.env.OAUTH_ACCESS_TOKEN_URL!,
-      },
-      userinfo: {
-        url: process.env.OAUTH_RESOURCE_OWNER_DETAILS_URL!,
-      },
-      profile(profile) {
-        if (profile.deleted_at != null || profile.active != 1) {
-          throw new Error("Compte supprimé ou désactivé");
+        password: { 
+          label: "Mot de passe", 
+          type: "password" 
         }
-
-        return {
-          id: profile.id?.toString() || profile.email,
-          email: profile.email,
-          name: profile.firstName + " " + profile.lastName,
-        };
       },
-    },
+      async authorize(credentials) {
+        // Mode développement : bypass complet
+        if (process.env.NODE_ENV === 'development') {
+          // Option 1: Utiliser un utilisateur fixe de ta DB
+          const user = await prisma.user.findUnique({
+            where: { id: "cmckfy1wy0000i0x5f7mfwx02" },
+          });
+          
+          if (user) {
+            return {
+              id: user.id,
+              email: user.email,
+              name: user.pseudo,
+            };
+          }
+          
+          // Option 2: Créer un utilisateur temporaire si pas trouvé
+          return {
+            id: "dev-user-123",
+            email: credentials?.email || "dev@example.com",
+            name: "Dev User",
+          };
+        }
+        
+        // En production, tu peux laisser ça pour sécurité
+        return null;
+      },
+    }),
+    
+    // Version simplifiée pour bypass complet (optionnel)
+    CredentialsProvider({
+      id: "dev-bypass",
+      name: "Dev Bypass",
+      credentials: {},
+      async authorize() {
+        // Bypass total - retourne toujours le même user
+        if (process.env.NODE_ENV === 'development') {
+          return {
+            id: "cmckfy1wy0000i0x5f7mfwx02",
+            email: "mathis.delmaere@etu.utc.fr",
+            name: "Mathis Delmaere",
+          };
+        }
+        return null;
+      },
+    })
   ],
-
+  
   callbacks: {
     async jwt({ token, account, profile, user }) {
-      // Si c’est une nouvelle connexion (first sign-in)
       if (account && user) {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: user.email! },
-        });
-
-        if (dbUser) {
-          token.id = dbUser.id.toString();
-          token.name = dbUser.pseudo;
-          token.email = dbUser.email;
+        // En mode dev, on peut bypasser la vérification DB
+        if (process.env.NODE_ENV === 'development') {
+          token.id = user.id;
+          token.name = user.name;
+          token.email = user.email;
         } else {
-          token.email = (profile as Profile | undefined)?.email;
-          token.name = (profile as Profile | undefined)?.name;
-          token.id = user?.id;
+          const dbUser = await prisma.user.findUnique({
+            where: { email: user.email! },
+          });
+          if (dbUser) {
+            token.id = dbUser.id.toString();
+            token.name = dbUser.pseudo;
+            token.email = dbUser.email;
+          } else {
+            token.email = (profile as Profile | undefined)?.email;
+            token.name = (profile as Profile | undefined)?.name;
+            token.id = user?.id;
+          }
         }
       }
-
       return token;
     },
-
+    
     async session({ session, token }) {
       if (token) {
         session.user = {
@@ -69,49 +103,45 @@ export const authOptions: NextAuthOptions = {
           id: token.id as string,
         };
       }
-
       return session;
     },
-
+    
     async signIn({ user }) {
       try {
-        if (!user.email) {
-          console.log("No email found");
-          return false;
+        // Bypass complet en développement
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🚀 Mode développement - bypass activé');
+          return true;
         }
-
+        
+        if (!user.email) return false;
+        
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email },
         });
-
+        
         if (!existingUser) {
-          console.log("User not found, redirecting to complete-profile");
-
           const email = encodeURIComponent(user.email);
           const pseudo = encodeURIComponent(user.name || "");
           return `/complete-profile?mail=${email}&pseudo=${pseudo}`;
         }
+        
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        
         await prisma.offer.deleteMany({
-          where: {
-            createdAt: { lt: sixMonthsAgo },
-          },
+          where: { createdAt: { lt: sixMonthsAgo } },
         });
-
-        // update last connection date
+        
         await prisma.user.update({
           where: { email: user.email },
           data: { lastLogin: new Date() },
         });
-
-        // remove 6 moth old users
+        
         await prisma.user.deleteMany({
-          where: {
-            lastLogin: { lt: sixMonthsAgo },
-          },
+          where: { lastLogin: { lt: sixMonthsAgo } },
         });
-
+        
         return true;
       } catch (error) {
         console.error("Erreur lors de la connexion:", error);
@@ -119,16 +149,16 @@ export const authOptions: NextAuthOptions = {
       }
     },
   },
-
+  
   session: {
     strategy: "jwt",
     maxAge: 60 * 60,
   },
-
+  
   jwt: {
     maxAge: 60 * 60,
   },
-
+  
   logger: {
     error: (code, metadata) => {
       console.error(`Auth Error ${code}:`, metadata);
@@ -137,7 +167,9 @@ export const authOptions: NextAuthOptions = {
       console.warn(`Auth Warning ${code}`);
     },
     debug: (code, metadata) => {
-      console.log(`Auth Debug ${code}:`, metadata);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Auth Debug ${code}:`, metadata);
+      }
     },
   },
 };

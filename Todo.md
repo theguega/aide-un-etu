@@ -1,6 +1,5 @@
 # TODO
 
-Les verbes des boutons
 Seed la DB
 
 ---

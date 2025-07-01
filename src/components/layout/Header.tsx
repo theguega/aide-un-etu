@@ -99,7 +99,7 @@ export function Header() {
             ) : (
               <button
                 onClick={() =>
-                  signIn("custom-provider", {
+                  signIn("dev-bypass", {
                     callbackUrl: "/",
                     redirect: true,
                   })

@@ -57,7 +57,6 @@ export function CreateOfferForm() {
       action={dispatch}
       className="space-y-6"
       aria-label="Formulaire de création d'offre d'entraide"
-      encType="multipart/form-data"
     >     
 
       {/* Photo */}
@@ -73,6 +72,8 @@ export function CreateOfferForm() {
                 src={photoPreview}
                 alt="Aperçu de la photo"
                 className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
+                width={96}
+                height={96}
               />
               <button
                 type="button"

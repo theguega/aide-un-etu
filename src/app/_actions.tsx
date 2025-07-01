@@ -81,6 +81,8 @@ export async function createOffer(
     };
   }
 
+  console.log(session.user.id);
+
   const userId = session.user.id;
   const user = await prisma.user.findUnique({
     where: { id: userId },

@@ -91,6 +91,26 @@ export const authOptions: NextAuthOptions = {
           const pseudo = encodeURIComponent(user.name || "");
           return `/complete-profile?mail=${email}&pseudo=${pseudo}`;
         }
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        await prisma.offer.deleteMany({
+          where: {
+            createdAt: { lt: sixMonthsAgo },
+          },
+        });
+
+        // update last connection date
+        await prisma.user.update({
+          where: { email: user.email },
+          data: { lastLogin: new Date() },
+        });
+
+        // remove 6 moth old users
+        await prisma.user.deleteMany({
+          where: {
+            lastLogin: { lt: sixMonthsAgo },
+          },
+        });
 
         return true;
       } catch (error) {

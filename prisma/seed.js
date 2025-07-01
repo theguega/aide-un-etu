@@ -38,13 +38,27 @@ function randomInt(min, max) {
 }
 
 function generatePseudo(index) {
-  const adjectives = ["rapide", "fort", "intelligent", "gentil", "fou", "sage", "cool", "doux"];
-  const nouns = ["lion", "tigre", "renard", "aigle", "ours", "chat", "loup", "panthère"];
-  return (
-    randomItem(adjectives) +
-    randomItem(nouns) +
-    (index + 1)
-  );
+  const adjectives = [
+    "rapide",
+    "fort",
+    "intelligent",
+    "gentil",
+    "fou",
+    "sage",
+    "cool",
+    "doux",
+  ];
+  const nouns = [
+    "lion",
+    "tigre",
+    "renard",
+    "aigle",
+    "ours",
+    "chat",
+    "loup",
+    "panthère",
+  ];
+  return randomItem(adjectives) + randomItem(nouns) + (index + 1);
 }
 
 function generateEmail(pseudo) {
@@ -105,6 +119,20 @@ function generateTags() {
   return shuffled.slice(0, count).join(",");
 }
 
+function generatePrice() {
+  const isFree = Math.random() < 0.8; // 80% de chance que ce soit gratuit
+  if (isFree) return 0;
+
+  // 20% de chance : prix aléatoire entre 1 et 100
+  return Math.floor(Math.random() * 100) + 1;
+}
+
+function generateNbPeopleHelped() {
+  const min = 0;
+  const max = 20;
+  return randomInt(min, max);
+}
+
 async function main() {
   console.log("Seeding database...");
 
@@ -122,6 +150,7 @@ async function main() {
         gender: randomItem(genders),
         description: generateDescription(),
         city: cityObj.city,
+        nb_people_helped: generateNbPeopleHelped(),
         postalCode: cityObj.postalCode,
       },
     });
@@ -136,8 +165,13 @@ async function main() {
       data: {
         title: generateOfferTitle(),
         description: generateOfferDescription(),
-        type: randomItem([OfferType.OBJET, OfferType.SERVICE, OfferType.CONNAISSANCE]),
+        type: randomItem([
+          OfferType.OBJET,
+          OfferType.SERVICE,
+          OfferType.CONNAISSANCE,
+        ]),
         tags: generateTags(),
+        price: generatePrice(),
         city: cityObj.city,
         postalCode: cityObj.postalCode,
         authorId: author.id,

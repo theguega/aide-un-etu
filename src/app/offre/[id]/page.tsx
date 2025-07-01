@@ -219,7 +219,7 @@ const ImpactCard = ({ type }: { type: string }) => {
     <section className="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl shadow-sm border border-green-200 p-8 mb-10">
       <div className="flex items-center gap-3 mb-6">
         <span className="text-3xl">{impact.icon}</span>
-        <h2 className="text-2xl font-bold text-green-800">{impact.title}</h2>
+        <h2 className="text-2xl font-bold text-green-900800">{impact.title}</h2>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -228,7 +228,7 @@ const ImpactCard = ({ type }: { type: string }) => {
             key={index}
             className="bg-white rounded-lg p-4 border border-green-100"
           >
-            <div className="text-2xl font-bold text-green-700 mb-1">
+            <div className="text-2xl font-bold text-green-900 mb-1">
               {stat.value}
             </div>
             <div className="text-sm font-semibold text-gray-700 mb-1">
@@ -250,7 +250,7 @@ const ImpactCard = ({ type }: { type: string }) => {
           href={impact.source.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-green-700 hover:underline"
+          className="hover:text-green-900 hover:underline"
         >
           {impact.source.text} ↗
         </a>
@@ -405,7 +405,7 @@ export default async function OfferDetailPage({
                 className={`inline-block px-4 py-2 rounded-full font-semibold text-lg
                 ${
                   offer.price === 0
-                    ? "bg-green-100 text-green-700 border border-green-300"
+                    ? "bg-green-100 text-green-900 border border-green-300"
                     : "bg-blue-100 text-blue-800 border border-blue-300"
                 }
               `}

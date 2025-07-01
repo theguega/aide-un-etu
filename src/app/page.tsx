@@ -10,11 +10,11 @@ export default function HomePage() {
     >
       <section className="max-w-3xl mx-auto text-center ld:mb-16 mb-8">
         <h1 className="text-4xl font-extrabold mb-4 text-black leading-tight tracking-tight">
-          Bienvenue sur <span className="text-green-700">Aide-un-étu</span>
+          Bienvenue sur <span className="text-green-900">Aide-un-étu</span>
         </h1>
         <p className="text-lg text-gray-800 leading-relaxed max-w-xl mx-auto">
-          La plateforme qui facilite l&apos;entraide près de chez vous, pour partager
-          objets, services ou connaissances en toute simplicité.
+          La plateforme qui facilite l&apos;entraide près de chez vous, pour
+          partager objets, services ou connaissances en toute simplicité.
         </p>
       </section>
 

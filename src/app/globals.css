@@ -48,3 +48,81 @@ body {
 .border-theme {
   border-color: var(--border);
 }
+
+@media print {
+  /* Police économe en encre */
+  body,
+  html {
+    font-family: "Century Gothic", Arial, sans-serif !important;
+    color: #000 !important;
+    background: #fff !important;
+    font-size: 12pt !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Cache header, footer, menu, sidebar */
+  header,
+  footer,
+  nav,
+  .sidebar,
+  .menu,
+  .bg-accent,
+  .bg-surface,
+  .border-theme,
+  [class*="Header"],
+  [class*="Footer"],
+  [class*="Menu"],
+  [class*="Sidebar"] {
+    display: none !important;
+  }
+
+  /* Cache tous les boutons, champs de formulaire, liens inutiles */
+  button,
+  input,
+  select,
+  textarea,
+  .no-print,
+  .print-hidden {
+    display: none !important;
+  }
+
+  /* Cache toutes les images sauf celles marquées .print-content ou .content-image */
+  img:not(.print-content):not(.content-image) {
+    display: none !important;
+  }
+
+  /* Optimise la largeur et les marges pour économiser du papier */
+  main,
+  .container,
+  .max-w-6xl,
+  .max-w-3xl,
+  .max-w-2xl {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Réduit les marges de page */
+  @page {
+    margin: 1cm;
+  }
+
+  /* Supprime les couleurs de fond */
+  * {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* Réduit la taille des titres pour éviter le gaspillage */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: bold !important;
+    color: #000 !important;
+    margin: 0.5em 0 0.2em 0 !important;
+  }
+}

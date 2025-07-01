@@ -23,6 +23,7 @@ model User {
   offers           Offer[]
   nb_people_helped Int?     @default(0)
   createdAt        DateTime @default(now())
+  lastLogin        DateTime @default(now())
 }
 
 model Offer {

@@ -99,6 +99,19 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
+        // update last connection date
+        await prisma.user.update({
+          where: { email: user.email },
+          data: { lastLogin: new Date() },
+        });
+
+        // remove 6 moth old users
+        await prisma.user.deleteMany({
+          where: {
+            lastLogin: { lt: sixMonthsAgo },
+          },
+        });
+
         return true;
       } catch (error) {
         console.error("Erreur lors de la connexion:", error);

@@ -75,7 +75,7 @@ export function CreateOfferForm() {
         />
         <p
           id="price-helper"
-          className="text-xs text-gray-600 dark:text-gray-400"
+          className="text-sm text-gray-600 dark:text-gray-400"
         >
           Entrez un prix en euros (facultatif).
         </p>
@@ -160,7 +160,7 @@ export function CreateOfferForm() {
           />
           <p
             id="tags-helper"
-            className="text-xs text-gray-600 dark:text-gray-400"
+            className="text-sm text-gray-600 dark:text-gray-400"
           >
             Séparez les tags par une virgule.
           </p>

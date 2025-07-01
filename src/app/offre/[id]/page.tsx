@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -14,6 +15,95 @@ const formatDate = (date: Date) => {
     hour: "2-digit",
     minute: "2-digit",
   }).format(date);
+};
+
+// Composant pour l'image de profil optimisée
+const ProfileImage = ({ 
+  src, 
+  alt, 
+  size = 64,
+  className = "" 
+}: { 
+  src?: string | null; 
+  alt: string; 
+  size?: number;
+  className?: string;
+}) => {
+  if (!src) {
+    // Avatar par défaut avec initiales
+    const initials = alt.split(' ').map(name => name[0]).join('').substring(0, 2).toUpperCase();
+    return (
+      <div 
+        className={`flex items-center justify-center bg-accent text-background font-bold rounded-full ${className}`}
+        style={{ width: size, height: size, fontSize: `${size / 3}px` }}
+      >
+        {initials}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`relative overflow-hidden rounded-full border-2 border-theme shadow-sm ${className}`}>
+      <Image
+        src={src}
+        alt={alt}
+        width={size}
+        height={size}
+        className="object-cover"
+        quality={75}
+        sizes={`${size}px`}
+        priority={false}
+      />
+    </div>
+  );
+};
+
+// Composant pour l'image de l'offre optimisée
+const OfferImage = ({ 
+  src, 
+  alt, 
+  className = "" 
+}: { 
+  src?: string | null; 
+  alt: string; 
+  className?: string;
+}) => {
+  if (!src) {
+    return (
+      <div className={`bg-surface border-2 border-dashed border-theme flex items-center justify-center ${className}`}>
+        <div className="text-center text-foreground/60">
+          <svg
+            className="mx-auto h-12 w-12 mb-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          <p className="text-sm font-medium">Aucune image</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`relative overflow-hidden ${className}`}>
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover transition-transform duration-300 hover:scale-105"
+        quality={80}
+        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 50vw"
+        priority={true}
+      />
+    </div>
+  );
 };
 
 const ImpactCard = ({ type }: { type: string }) => {
@@ -237,7 +327,7 @@ export default async function OfferDetailPage({
       <section className="relative mb-10">
         <div className="h-32 md:h-40 w-full rounded-2xl bg-surface flex items-end overflow-hidden shadow-sm">
           <div className="p-6 md:p-8">
-            <span className="inline-block bg-accent text-background font-semibold px-4 py-1 rounded-full text-sm md:text-xs mb-2 shadow-sm">
+            <span className="inline-block bg-accent text-background font-semibold px-4 py-1 rounded-full text-sm md:text-xs lg:mb-2 shadow-sm">
               {offer.type.charAt(0).toUpperCase() +
                 offer.type.slice(1).toLowerCase()}
             </span>
@@ -290,6 +380,16 @@ export default async function OfferDetailPage({
             </div>
           </section>
 
+          {offer.photoUrl && (
+            <section className="mb-8">
+              <OfferImage
+                src={offer.photoUrl}
+                alt={`Photo de l'offre: ${offer.title}`}
+                className="w-full h-64 md:h-80 rounded-xl shadow-lg border border-theme"
+              />
+            </section>
+          )}
+
           <ImpactCard type={offer.type} />
         </div>
 
@@ -327,15 +427,12 @@ export default async function OfferDetailPage({
               Proposé par
             </h2>
 
-            <div className="flex items-center gap-5 mb-6">
-              {/* Optionnel : image de profil si dispo */}
-              {/* {offer.author.image && (
-                <img
-                  src={offer.author.image}
-                  alt={`Photo de profil de ${offer.author.pseudo}`}
-                  className="w-16 h-16 rounded-full border border-blue-200 shadow-sm"
-                />
-              )} */}
+            <div className="flex items-center gap-4 mb-6">
+              <ProfileImage
+                src={offer.author.profilePhotoUrl}
+                alt={`Photo de profil de ${offer.author.pseudo}`}
+                size={64}
+              />
               <div>
                 <p className="text-lg font-semibold text-foreground">
                   {offer.author.pseudo}
@@ -364,7 +461,7 @@ export default async function OfferDetailPage({
                   <h3 className="text-lg font-semibold text-accent">
                     Contacter {offer.author.pseudo}
                   </h3>
-                  <a href="mailto {offer.author.email}" className="text-base text-blue-600 hover:underline">
+                  <a href={`mailto:${offer.author.email}`} className="text-base text-blue-600 hover:underline block">
                     <strong>Email :</strong> {offer.author.email}
                   </a>
                   {offer.author.phone && (
@@ -397,7 +494,7 @@ export default async function OfferDetailPage({
                 className="mt-auto"
               >
                 <button
-                  //type="submit"
+                  type="submit"
                   className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-5 cursor-pointer rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                   aria-label="Supprimer cette offre"
                 >

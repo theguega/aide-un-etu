@@ -41,16 +41,6 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="fr" className="scroll-smooth">
-      <head>
-        {/* Préchargement optimisé des polices */}
-        <link
-          rel="preload"
-          href="/fonts/inter.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-      </head>
       <body
         className={`${inter.className} bg-gray-50 text-gray-900 min-h-screen flex flex-col`}
       >

@@ -26,6 +26,7 @@ export default async function ServicesPage({
   const resolvedSearchParams = await searchParams;
 
   const postalCodeFilter = resolvedSearchParams?.postalCode;
+  const itemName = resolvedSearchParams?.itemName;
   const tagsQuery = resolvedSearchParams?.tags;
   const tagsFilter = tagsQuery
     ? tagsQuery
@@ -35,8 +36,14 @@ export default async function ServicesPage({
     : [];
 
   const whereClause: Prisma.OfferWhereInput = {
-    type: OfferType.SERVICE,
+    type: OfferType.OBJET,
     ...(postalCodeFilter && { postalCode: postalCodeFilter }),
+    ...(itemName && {
+      title: {
+        contains: itemName,
+        //mode: "insensitive",
+      },
+    }),
     ...(tagsFilter.length > 0 && {
       AND: tagsFilter.map((tag) => ({
         tags: {

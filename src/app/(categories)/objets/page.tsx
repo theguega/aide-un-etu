@@ -26,6 +26,7 @@ export default async function ObjetsPage({
   const resolvedSearchParams = await searchParams;
 
   const postalCodeFilter = resolvedSearchParams?.postalCode;
+  const itemName = resolvedSearchParams?.itemName;
   const tagsQuery = resolvedSearchParams?.tags;
   const tagsFilter = tagsQuery
     ? tagsQuery
@@ -37,6 +38,12 @@ export default async function ObjetsPage({
   const whereClause: Prisma.OfferWhereInput = {
     type: OfferType.OBJET,
     ...(postalCodeFilter && { postalCode: postalCodeFilter }),
+    ...(itemName && {
+      title: {
+        contains: itemName,
+        //mode: "insensitive",
+      },
+    }),
     ...(tagsFilter.length > 0 && {
       AND: tagsFilter.map((tag) => ({
         tags: {

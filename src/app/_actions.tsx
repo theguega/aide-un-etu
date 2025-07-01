@@ -24,6 +24,7 @@ const CreateOfferSchema = z.object({
   postalCode: z
     .string()
     .regex(/^\d{5}$/, { message: "Le code postal doit contenir 5 chiffres." }),
+  photoUrl: z.string().optional(),
 });
 
 export type FormState = {
@@ -35,6 +36,7 @@ export type FormState = {
     postalCode?: string[];
     price?: string[];
     tags?: string[];
+    photoUrl?: string[];
   };
   message?: string;
 };
@@ -73,6 +75,7 @@ export async function createOffer(
     price: formData.get("price"),
     city: formData.get("city"),
     postalCode: formData.get("postalCode"),
+    photoUrl: formData.get("photoUrl"),
   });
 
   if (!validatedFields.success) {
@@ -91,6 +94,7 @@ export async function createOffer(
         city: validatedFields.data.city,
         postalCode: validatedFields.data.postalCode,
         tags: validatedFields.data.tags,
+        photoUrl: validatedFields.data.photoUrl,
         price: validatedFields.data.price
           ? parseFloat(validatedFields.data.price)
           : null,

@@ -364,9 +364,9 @@ export default async function OfferDetailPage({
                   <h3 className="text-lg font-semibold text-accent">
                     Contacter {offer.author.pseudo}
                   </h3>
-                  <p>
+                  <a href="mailto {offer.author.email}" className="text-base text-blue-600 hover:underline">
                     <strong>Email :</strong> {offer.author.email}
-                  </p>
+                  </a>
                   {offer.author.phone && (
                     <p>
                       <strong>Téléphone :</strong> {offer.author.phone}

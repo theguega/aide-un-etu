@@ -33,7 +33,7 @@ export default async function handler(
       },
     });
 
-    const [fields, files] = await form.parse(req);
+    const [, files] = await form.parse(req);
     const file = Array.isArray(files.file) ? files.file[0] : files.file;
 
     if (!file) {
@@ -49,12 +49,11 @@ export default async function handler(
     fs.renameSync(file.filepath, newFilePath);
 
     const photoUrl = `/uploads/profile-photos/${newFileName}`;
-    
-    res.status(200).json({ 
-      url: photoUrl,
-      filename: newFileName 
-    });
 
+    res.status(200).json({
+      url: photoUrl,
+      filename: newFileName
+    });
   } catch (error) {
     console.error("Erreur lors de l'upload:", error);
     res.status(500).json({ error: "Erreur lors de l'upload du fichier" });

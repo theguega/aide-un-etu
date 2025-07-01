@@ -1,4 +1,3 @@
-// pages/api/upload-offer-photo.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
@@ -28,15 +27,20 @@ export default async function handler(
       uploadDir: uploadsDir,
       keepExtensions: true,
       maxFileSize: 5 * 1024 * 1024,
-      filter: ({ mimetype }) => {
-        return mimetype?.startsWith("image/") || false;
-      },
+      filter: ({ mimetype }) => mimetype?.startsWith("image/") ?? false,
     });
 
-    const [fields, files] = await form.parse(req);
-    const file = Array.isArray(files.file) ? files.file[0] : files.file;
+    const files = await new Promise<{ files: formidable.Files }>((resolve, reject) => {
+      form.parse(req, (err, fields, files) => {
+        if (err) return reject(err);
+        resolve({ files });
+      });
+    });
 
-    if (!file) {
+    const uploadedFile = files.files.file;
+    const file = Array.isArray(uploadedFile) ? uploadedFile[0] : uploadedFile;
+
+    if (!file || typeof file === "string") {
       return res.status(400).json({ error: "Aucun fichier trouvé" });
     }
 

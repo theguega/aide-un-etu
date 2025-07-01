@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -16,6 +17,95 @@ const formatDate = (date: Date) => {
   }).format(date);
 };
 
+// Composant pour l'image de profil optimisée
+const ProfileImage = ({ 
+  src, 
+  alt, 
+  size = 64,
+  className = "" 
+}: { 
+  src?: string | null; 
+  alt: string; 
+  size?: number;
+  className?: string;
+}) => {
+  if (!src) {
+    // Avatar par défaut avec initiales
+    const initials = alt.split(' ').map(name => name[0]).join('').substring(0, 2).toUpperCase();
+    return (
+      <div 
+        className={`flex items-center justify-center bg-accent text-background font-bold rounded-full ${className}`}
+        style={{ width: size, height: size, fontSize: `${size / 3}px` }}
+      >
+        {initials}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`relative overflow-hidden rounded-full border-2 border-theme shadow-sm ${className}`}>
+      <Image
+        src={src}
+        alt={alt}
+        width={size}
+        height={size}
+        className="object-cover"
+        quality={75}
+        sizes={`${size}px`}
+        priority={false}
+      />
+    </div>
+  );
+};
+
+// Composant pour l'image de l'offre optimisée
+const OfferImage = ({ 
+  src, 
+  alt, 
+  className = "" 
+}: { 
+  src?: string | null; 
+  alt: string; 
+  className?: string;
+}) => {
+  if (!src) {
+    return (
+      <div className={`bg-surface border-2 border-dashed border-theme flex items-center justify-center ${className}`}>
+        <div className="text-center text-foreground/60">
+          <svg
+            className="mx-auto h-12 w-12 mb-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          <p className="text-sm font-medium">Aucune image</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`relative overflow-hidden ${className}`}>
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover transition-transform duration-300 hover:scale-105"
+        quality={80}
+        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 50vw"
+        priority={true}
+      />
+    </div>
+  );
+};
+
 const ImpactCard = ({ type }: { type: string }) => {
   const getImpactData = () => {
     switch (type.toLowerCase()) {
@@ -27,21 +117,21 @@ const ImpactCard = ({ type }: { type: string }) => {
             {
               label: "Émissions CO2 évitées",
               value: "~6.5 kg CO2",
-              description: "par rapport à un achat neuf moyen"
+              description: "par rapport à un achat neuf moyen",
             },
             {
               label: "Économie réalisée",
               value: "40-70%",
-              description: "du prix neuf en moyenne"
-            }
+              description: "du prix neuf en moyenne",
+            },
           ],
           source: {
             text: "Source : ADEME - Impact environnemental du numérique",
-            url: "https://www.ademe.fr/sites/default/files/assets/documents/guide-pratique-face-cachee-numerique.pdf"
+            url: "https://www.ademe.fr/sites/default/files/assets/documents/guide-pratique-face-cachee-numerique.pdf",
           },
-          tip: "En choisissant la seconde main, vous participez à l'économie circulaire et réduisez les déchets électroniques."
+          tip: "En choisissant la seconde main, vous participez à l'économie circulaire et réduisez les déchets électroniques.",
         };
-      
+
       case "service":
         return {
           icon: "💰",
@@ -50,21 +140,21 @@ const ImpactCard = ({ type }: { type: string }) => {
             {
               label: "Économie moyenne",
               value: "30-50%",
-              description: "par rapport aux services professionnels moyens"
+              description: "par rapport aux services professionnels moyens",
             },
             {
               label: "Échange de compétences",
               value: "Gratuit",
-              description: "possibilité de troc de services"
-            }
+              description: "possibilité de troc de services",
+            },
           ],
           source: {
             text: "Source : Étude sur l'économie collaborative - INSEE",
-            url: "https://www.insee.fr/fr/statistiques/4238589"
+            url: "https://www.insee.fr/fr/statistiques/4238589",
           },
-          tip: "Les services entre particuliers favorisent le lien social et l'entraide locale."
+          tip: "Les services entre particuliers favorisent le lien social et l'entraide locale.",
         };
-      
+
       case "connaissance":
         return {
           icon: "🧠",
@@ -73,21 +163,21 @@ const ImpactCard = ({ type }: { type: string }) => {
             {
               label: "Coût formation évité",
               value: "50-200€",
-              description: "par rapport aux formations payantes en moyenne"
+              description: "par rapport aux formations payantes en moyenne",
             },
             {
               label: "Apprentissage personnalisé",
               value: "100%",
-              description: "adapté à vos besoins spécifiques"
-            }
+              description: "adapté à vos besoins spécifiques",
+            },
           ],
           source: {
             text: "Source : Observatoire de la formation - Centre Inffo",
-            url: "https://www.centre-inffo.fr/"
+            url: "https://www.centre-inffo.fr/",
           },
-          tip: "Partager ses connaissances renforce les compétences et crée du lien social."
+          tip: "Partager ses connaissances renforce les compétences et crée du lien social.",
         };
-      
+
       default:
         return {
           icon: "♻️",
@@ -96,19 +186,19 @@ const ImpactCard = ({ type }: { type: string }) => {
             {
               label: "Réduction des déchets",
               value: "Significative",
-              description: "en donnant une seconde vie"
+              description: "en donnant une seconde vie",
             },
             {
               label: "Économie locale",
               value: "Renforcée",
-              description: "par les échanges de proximité"
-            }
+              description: "par les échanges de proximité",
+            },
           ],
           source: {
             text: "Source : ADEME - Guide de l'économie circulaire",
-            url: "https://www.ademe.fr/economie-circulaire"
+            url: "https://www.ademe.fr/economie-circulaire",
           },
-          tip: "Chaque geste compte pour un mode de vie plus durable."
+          tip: "Chaque geste compte pour un mode de vie plus durable.",
         };
     }
   };
@@ -121,27 +211,34 @@ const ImpactCard = ({ type }: { type: string }) => {
         <span className="text-3xl">{impact.icon}</span>
         <h2 className="text-2xl font-bold text-green-800">{impact.title}</h2>
       </div>
-      
+
       <div className="grid md:grid-cols-2 gap-6 mb-6">
         {impact.stats.map((stat, index) => (
-          <div key={index} className="bg-white rounded-lg p-4 border border-green-100">
-            <div className="text-2xl font-bold text-green-700 mb-1">{stat.value}</div>
-            <div className="text-sm font-semibold text-gray-700 mb-1">{stat.label}</div>
+          <div
+            key={index}
+            className="bg-white rounded-lg p-4 border border-green-100"
+          >
+            <div className="text-2xl font-bold text-green-700 mb-1">
+              {stat.value}
+            </div>
+            <div className="text-sm font-semibold text-gray-700 mb-1">
+              {stat.label}
+            </div>
             <div className="text-xs text-gray-600">{stat.description}</div>
           </div>
         ))}
       </div>
-      
+
       <div className="bg-green-100 rounded-lg p-4 mb-4">
         <p className="text-sm text-green-800 font-medium">
           💡 <strong>Le saviez-vous ?</strong> {impact.tip}
         </p>
       </div>
-      
+
       <div className="text-xs text-gray-600">
-        <a 
-          href={impact.source.url} 
-          target="_blank" 
+        <a
+          href={impact.source.url}
+          target="_blank"
           rel="noopener noreferrer"
           className="hover:text-green-700 hover:underline"
         >
@@ -194,17 +291,27 @@ export default async function OfferDetailPage({
     notFound();
   }
 
+  const author = await prisma.user.findUnique({
+    where: { id: offer.author.id },
+  });
+
   const session = await getServerSession(authOptions);
   const isOwner = session?.user?.id === offer.author.id;
 
   const type = offer.type.toLowerCase(); // 'objet', 'connaissance', 'service'
   const backLinkMap: Record<string, { href: string; label: string }> = {
     objet: { href: "/objets", label: "Retour à la liste des objets" },
-    connaissance: { href: "/connaissances", label: "Retour à la liste des connaissances" },
+    connaissance: {
+      href: "/connaissances",
+      label: "Retour à la liste des connaissances",
+    },
     service: { href: "/services", label: "Retour à la liste des services" },
   };
 
-  const backLink = backLinkMap[type] ?? { href: "/", label: "Retour à l'accueil" };
+  const backLink = backLinkMap[type] ?? {
+    href: "/",
+    label: "Retour à l'accueil",
+  };
 
   return (
     <main className="container mx-auto max-w-6xl px-2 md:px-0">
@@ -237,7 +344,7 @@ export default async function OfferDetailPage({
       <section className="relative mb-10">
         <div className="h-32 md:h-40 w-full rounded-2xl bg-surface flex items-end overflow-hidden shadow-sm">
           <div className="p-6 md:p-8">
-            <span className="inline-block bg-accent text-background font-semibold px-4 py-1 rounded-full text-sm md:text-xs mb-2 shadow-sm">
+            <span className="inline-block bg-accent text-background font-semibold px-4 py-1 rounded-full text-sm md:text-xs lg:mb-2 shadow-sm">
               {offer.type.charAt(0).toUpperCase() +
                 offer.type.slice(1).toLowerCase()}
             </span>
@@ -282,13 +389,36 @@ export default async function OfferDetailPage({
           )}
 
           <section className="bg-surface rounded-xl shadow-sm border border-theme p-8 mb-10">
-            <h2 className="text-2xl font-bold mb-6 text-accent">Description</h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-accent">Description</h2>
+              <span
+                className={`inline-block px-4 py-2 rounded-full font-semibold text-lg
+                ${
+                  offer.price === 0
+                    ? "bg-green-100 text-green-700 border border-green-300"
+                    : "bg-blue-100 text-blue-800 border border-blue-300"
+                }
+              `}
+              >
+                {offer.price === 0 ? "Gratuit" : `${offer.price} €`}
+              </span>
+            </div>
             <div className="space-y-6 text-foreground">
               {offer.description.split("\n").map((paragraph, index) => (
                 <p key={index}>{paragraph}</p>
               ))}
             </div>
           </section>
+
+          {offer.photoUrl && (
+            <section className="mb-8">
+              <OfferImage
+                src={offer.photoUrl}
+                alt={`Photo de l'offre: ${offer.title}`}
+                className="w-full h-64 md:h-80 rounded-xl shadow-lg border border-theme"
+              />
+            </section>
+          )}
 
           <ImpactCard type={offer.type} />
         </div>
@@ -327,15 +457,12 @@ export default async function OfferDetailPage({
               Proposé par
             </h2>
 
-            <div className="flex items-center gap-5 mb-6">
-              {/* Optionnel : image de profil si dispo */}
-              {/* {offer.author.image && (
-                <img
-                  src={offer.author.image}
-                  alt={`Photo de profil de ${offer.author.pseudo}`}
-                  className="w-16 h-16 rounded-full border border-blue-200 shadow-sm"
-                />
-              )} */}
+            <div className="flex items-center gap-4 mb-6">
+              <ProfileImage
+                src={offer.author.profilePhotoUrl}
+                alt={`Photo de profil de ${offer.author.pseudo}`}
+                size={64}
+              />
               <div>
                 <p className="text-lg font-semibold text-foreground">
                   {offer.author.pseudo}
@@ -352,6 +479,16 @@ export default async function OfferDetailPage({
               </blockquote>
             )}
 
+            <div className="mb-6 flex items-center gap-2">
+              <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 font-semibold text-sm border border-green-300">
+                <span className="mr-1 text-lg">🤝</span>
+                {author?.nb_people_helped || 0}
+              </span>
+              <span className="text-m text-foreground/70">
+                Personnes aidées
+              </span>
+            </div>
+
             {isOwner ? (
               <div className="mb-4 space-y-5">
                 <div className="text-base text-accent p-4 bg-surface rounded-md border-4 border-theme text-center font-semibold">
@@ -364,7 +501,10 @@ export default async function OfferDetailPage({
                   <h3 className="text-lg font-semibold text-accent">
                     Contacter {offer.author.pseudo}
                   </h3>
-                  <a href="mailto {offer.author.email}" className="text-base text-blue-600 hover:underline">
+                  <a
+                    href={`mailto:${offer.author.email}`}
+                    className="text-base text-blue-600 hover:underline"
+                  >
                     <strong>Email :</strong> {offer.author.email}
                   </a>
                   {offer.author.phone && (
@@ -397,7 +537,7 @@ export default async function OfferDetailPage({
                 className="mt-auto"
               >
                 <button
-                  //type="submit"
+                  type="submit"
                   className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-5 cursor-pointer rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                   aria-label="Supprimer cette offre"
                 >

@@ -1,19 +1,21 @@
 "use client";
 
-import { useActionState, useState, useRef } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createOffer, type FormState } from "@/app/_actions";
 import { OfferType } from "@prisma/client";
 import { Camera, X } from "lucide-react";
+import { useRef } from "react";
+import Image from "next/image";
 
-function SubmitButton({ disabled }: { disabled?: boolean }) {
+function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
     <button
       type="submit"
-      aria-disabled={pending || disabled}
-      disabled={pending || disabled}
+      aria-disabled={pending}
+      disabled={pending}
       className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-2xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
     >
       {pending ? "Publication en cours..." : "Publier mon offre"}
@@ -23,124 +25,54 @@ function SubmitButton({ disabled }: { disabled?: boolean }) {
 
 export function CreateOfferForm() {
   const initialState: FormState = { message: "", errors: {} };
-  const [state, formAction] = useActionState(createOffer, initialState);
-  
-  const [offerPhoto, setOfferPhoto] = useState<File | null>(null);
+  const [state, dispatch] = useActionState(createOffer, initialState);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
-  const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Vérifier le type de fichier
-      if (!file.type.startsWith('image/')) {
-        alert('Veuillez sélectionner un fichier image valide.');
-        return;
-      }
-      
-      // Vérifier la taille (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('La taille de l\'image ne doit pas dépasser 5MB.');
-        return;
-      }
-
-      setOfferPhoto(file);
-      
-      // Créer une preview
       const reader = new FileReader();
-      reader.onload = (event) => {
-        setPhotoPreview(event.target?.result as string);
+      reader.onload = (e) => {
+        setPhotoPreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
+    } else {
+      setPhotoPreview(null);
     }
   };
 
   const removePhoto = () => {
-    setOfferPhoto(null);
     setPhotoPreview(null);
-    setUploadedPhotoUrl(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const uploadPhoto = async (file: File): Promise<string | null> => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await fetch('/api/upload-offer-photo', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const { url } = await response.json();
-        return url;
-      } else {
-        console.error('Erreur lors de l\'upload de la photo');
-        return null;
-      }
-    } catch (error) {
-      console.error('Erreur lors de l\'upload:', error);
-      return null;
-    }
-  };
-
-  // Fonction pour gérer l'upload de photo avant soumission
-  const handleFormSubmit = async (formData: FormData) => {
-    if (offerPhoto && !uploadedPhotoUrl) {
-      setIsUploadingPhoto(true);
-      
-      try {
-        const photoUrl = await uploadPhoto(offerPhoto);
-        if (!photoUrl) {
-          alert("Erreur lors de l'upload de la photo. Veuillez réessayer.");
-          setIsUploadingPhoto(false);
-          return;
-        }
-        
-        setUploadedPhotoUrl(photoUrl);
-        formData.set('photoUrl', photoUrl);
-        
-        // Appeler l'action serveur avec l'URL de la photo
-        formAction(formData);
-      } catch (error) {
-        console.error("Erreur:", error);
-        alert("Une erreur est survenue lors de l'upload. Veuillez réessayer.");
-      } finally {
-        setIsUploadingPhoto(false);
-      }
-    } else {
-      // Si pas de photo ou photo déjà uploadée, soumettre directement
-      if (uploadedPhotoUrl) {
-        formData.set('photoUrl', uploadedPhotoUrl);
-      }
-      formAction(formData);
-    }
+    const photoInput = document.getElementById("photo") as HTMLInputElement;
+    if (photoInput) photoInput.value = "";
   };
 
   return (
     <form
-      action={handleFormSubmit}
+      action={dispatch}
       className="space-y-6"
       aria-label="Formulaire de création d'offre d'entraide"
-    >
-      {/* Photo de l'offre */}
-      <div className="space-y-2">
-        <label className="block text-sm font-semibold text-black dark:text-white">
-          Photo de l&apos;offre (optionnelle)
+      encType="multipart/form-data"
+    >     
+
+      {/* Photo */}
+      <div className="flex flex-col items-center">
+        <label className="mb-2 font-semibold text-black dark:text-white">
+          Photo (optionnelle)
         </label>
-        
-        <div className="flex items-center space-x-4">
+
+        <div className="relative">
           {photoPreview ? (
             <div className="relative">
-              <img
+              <Image
                 src={photoPreview}
-                alt="Aperçu de la photo de l'offre"
-                className="w-20 h-20 rounded-xl object-cover border-2 border-gray-300"
+                alt="Aperçu de la photo"
+                className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
               />
               <button
                 type="button"
@@ -152,52 +84,46 @@ export function CreateOfferForm() {
               </button>
             </div>
           ) : (
-            <div 
-              className="w-20 h-20 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors border-2 border-dashed border-gray-400"
-              onClick={() => fileInputRef.current?.click()}
+            <div
+              className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+              onClick={handlePhotoClick}
             >
-              <Camera size={20} className="text-gray-500" />
+              <Camera size={24} className="text-gray-500" />
             </div>
           )}
-
-          <div className="flex-1">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoSelect}
-              className="hidden"
-              aria-label="Sélectionner une photo pour l'offre"
-            />
-            
-            {!photoPreview ? (
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="text-md text-green-600 hover:text-green-700 underline"
-              >
-                Ajouter une photo
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="text-md text-green-600 hover:text-green-700 underline"
-              >
-                Changer la photo
-              </button>
-            )}
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Formats acceptés: JPG, PNG, GIF (max 5MB)
-            </p>
-          </div>
         </div>
-        
-        {/* Champ caché pour l'URL de la photo */}
-        <input type="hidden" name="photoUrl" value={uploadedPhotoUrl || ''} />
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          id="photo"
+          name="photo"
+          accept="image/jpeg,image/jpg,image/png,image/webp"
+          onChange={handlePhotoChange}
+          className="hidden"
+          aria-describedby="photo-error"
+        />
+
+        {!photoPreview && (
+          <button
+            type="button"
+            onClick={handlePhotoClick}
+            className="mt-2 text-sm text-green-600 hover:text-green-700 underline"
+          >
+            Ajouter une photo
+          </button>
+        )}
+
+        <div id="photo-error" aria-live="polite" aria-atomic="true">
+          {state.errors?.photo && (
+            <p className="mt-1 text-sm text-red-600">
+              {state.errors.photo.join(", ")}
+            </p>
+          )}
+        </div>
       </div>
 
-      {/* Titre et prix facultatif*/}
+      {/* Titre */}
       <div className="space-y-2">
         <label
           htmlFor="title"
@@ -411,21 +337,8 @@ export function CreateOfferForm() {
       {/* Message d'erreur pour la case (si besoin) */}
       <div id="acceptTerms-error" aria-live="polite" aria-atomic="true" />
 
-      {/* Messages d'erreur globaux */}
-      {state.message && (
-        <div className="rounded-2xl bg-red-50 border border-red-200 p-4">
-          <p className="text-sm text-red-600">{state.message}</p>
-        </div>
-      )}
-
       {/* Bouton */}
-      <SubmitButton disabled={isUploadingPhoto} />
-      
-      {isUploadingPhoto && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-          Upload de la photo en cours...
-        </p>
-      )}
+      <SubmitButton />
     </form>
   );
 }

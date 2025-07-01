@@ -15,9 +15,11 @@ const typeToPathMap: Record<OfferType, string> = {
 };
 
 const typeToIconMap: Record<OfferType, React.ReactNode> = {
-  OBJET: <ToolCase className="w-10 h-10 text-green-700" aria-hidden="true" />,
-  SERVICE: <Users className="w-10 h-10 text-green-700" aria-hidden="true" />,
-  CONNAISSANCE: <BookOpen className="w-10 h-10 text-green-700" aria-hidden="true" />,
+  OBJET: <ToolCase className="w-10 h-10 text-green-900" aria-hidden="true" />,
+  SERVICE: <Users className="w-10 h-10 text-green-900" aria-hidden="true" />,
+  CONNAISSANCE: (
+    <BookOpen className="w-10 h-10 text-green-900" aria-hidden="true" />
+  ),
 };
 
 export function CategoryCard({ type, title, description }: CategoryCardProps) {

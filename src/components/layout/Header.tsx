@@ -52,7 +52,7 @@ export function Header() {
               stroke="currentColor"
               role="img"
               aria-labelledby="image de planète"
-              className="size-10 h-10 w-10 text-green-700 hover:text-green-800 transition-colors"
+              className="size-10 h-10 w-10 text-green-900 hover:text-green-800 transition-colors"
             >
               <title id="planetTitle">Icône de planète</title>
               <desc id="planetDesc">
@@ -73,7 +73,7 @@ export function Header() {
           >
             <Link
               href="/creer-offre"
-              className="flex justify-center text-black font-semibold hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-offset-2 transition-colors whitespace-nowrap"
+              className="flex justify-center text-black font-semibold hover:text-green-900 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-offset-2 transition-colors whitespace-nowrap"
             >
               Créer une offre
               <span id="creer-offre-desc" className="sr-only">

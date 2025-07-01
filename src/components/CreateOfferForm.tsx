@@ -57,8 +57,8 @@ export function CreateOfferForm() {
       action={dispatch}
       className="space-y-6"
       aria-label="Formulaire de création d'offre d'entraide"
-    >     
-
+      encType="multipart/form-data"
+    >
       {/* Photo */}
       <div className="flex flex-col items-center">
         <label className="mb-2 font-semibold text-black dark:text-white">
@@ -109,7 +109,7 @@ export function CreateOfferForm() {
           <button
             type="button"
             onClick={handlePhotoClick}
-            className="mt-2 text-sm text-green-600 hover:text-green-700 underline"
+            className="mt-2 text-sm text-green-600 hover:text-green-900 underline"
           >
             Ajouter une photo
           </button>

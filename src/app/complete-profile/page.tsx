@@ -49,7 +49,8 @@ function CompleteProfileForm() {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+      [name]:
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
   };
 
@@ -57,19 +58,19 @@ function CompleteProfileForm() {
     const file = e.target.files?.[0];
     if (file) {
       // Vérifier le type de fichier
-      if (!file.type.startsWith('image/')) {
-        alert('Veuillez sélectionner un fichier image valide.');
+      if (!file.type.startsWith("image/")) {
+        alert("Veuillez sélectionner un fichier image valide.");
         return;
       }
-      
+
       // Vérifier la taille (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('La taille de l\'image ne doit pas dépasser 5MB.');
+        alert("La taille de l'image ne doit pas dépasser 5MB.");
         return;
       }
 
       setProfilePhoto(file);
-      
+
       // Créer une preview
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -83,17 +84,17 @@ function CompleteProfileForm() {
     setProfilePhoto(null);
     setPhotoPreview(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
   const uploadPhoto = async (file: File): Promise<string | null> => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     try {
-      const response = await fetch('/api/upload-profile-photo', {
-        method: 'POST',
+      const response = await fetch("/api/upload-profile-photo", {
+        method: "POST",
         body: formData,
       });
 
@@ -101,11 +102,11 @@ function CompleteProfileForm() {
         const { url } = await response.json();
         return url;
       } else {
-        console.error('Erreur lors de l\'upload de la photo');
+        console.error("Erreur lors de l'upload de la photo");
         return null;
       }
     } catch (error) {
-      console.error('Erreur lors de l\'upload:', error);
+      console.error("Erreur lors de l'upload:", error);
       return null;
     }
   };
@@ -121,7 +122,7 @@ function CompleteProfileForm() {
 
     try {
       let profilePhotoUrl = null;
-      
+
       // Upload de la photo si présente
       if (profilePhoto) {
         profilePhotoUrl = await uploadPhoto(profilePhoto);
@@ -171,8 +172,10 @@ function CompleteProfileForm() {
       >
         {/* Photo de profil */}
         <div className="flex flex-col items-center">
-          <label className="mb-2 font-semibold">Photo de profil (optionnelle)</label>
-          
+          <label className="mb-2 font-semibold">
+            Photo de profil (optionnelle)
+          </label>
+
           <div className="relative">
             {photoPreview ? (
               <div className="relative">
@@ -191,7 +194,7 @@ function CompleteProfileForm() {
                 </button>
               </div>
             ) : (
-              <div 
+              <div
                 className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                 onClick={() => fileInputRef.current?.click()}
               >
@@ -208,12 +211,12 @@ function CompleteProfileForm() {
             className="hidden"
             aria-label="Sélectionner une photo de profil"
           />
-          
+
           {!photoPreview && (
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="mt-2 text-sm text-green-600 hover:text-green-700 underline"
+              className="mt-2 text-sm text-green-800 hover:text-green-900 underline"
             >
               Ajouter une photo
             </button>
@@ -360,7 +363,7 @@ function CompleteProfileForm() {
               id="acceptCGU"
               name="acceptCGU"
               type="checkbox"
-              className="mt-1 mr-2 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+              className="mt-1 mr-2 h-4 w-4 rounded border-gray-300 text-green-800 focus:ring-green-500"
               required
               checked={formData.acceptCGU}
               onChange={handleChange}
@@ -371,7 +374,7 @@ function CompleteProfileForm() {
                 href="/cgu"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-green-600 underline hover:text-green-700"
+                className="text-green-800 underline hover:text-green-800"
               >
                 conditions générales d&apos;utilisation
               </a>{" "}
@@ -380,7 +383,7 @@ function CompleteProfileForm() {
                 href="/rgpd"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-green-600 underline hover:text-green-700"
+                className="text-green-800 underline hover:text-green-900"
               >
                 politique de confidentialité (RGPD)
               </a>
@@ -411,18 +414,20 @@ export default function CompleteProfilePage() {
   }, []);
 
   return (
-    <Suspense fallback={
-      <div className="max-w-lg mx-auto p-6 mt-2 bg-white rounded-2xl shadow-xl text-black dark:bg-black dark:text-white border border-gray-300">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-6"></div>
-          <div className="space-y-4">
-            <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded"></div>
-            <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded"></div>
-            <div className="h-20 bg-gray-300 dark:bg-gray-700 rounded"></div>
+    <Suspense
+      fallback={
+        <div className="max-w-lg mx-auto p-6 mt-2 bg-white rounded-2xl shadow-xl text-black dark:bg-black dark:text-white border border-gray-300">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-6"></div>
+            <div className="space-y-4">
+              <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded"></div>
+              <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded"></div>
+              <div className="h-20 bg-gray-300 dark:bg-gray-700 rounded"></div>
+            </div>
           </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <CompleteProfileForm />
     </Suspense>
   );

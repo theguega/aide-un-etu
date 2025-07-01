@@ -16,17 +16,17 @@ export function FilterBar() {
     if (pathname?.startsWith("/services")) {
       return {
         label: "Nom du service",
-        placeholder: "cours de maths, aide au ménage, etc.",
+        placeholder: "cours de maths, ...",
       };
     } else if (pathname?.startsWith("/connaissances")) {
       return {
         label: "Nom de la connaissance",
-        placeholder: "électronique, couture, jardinage, etc.",
+        placeholder: "jardinage, couture, ...",
       };
     } else {
       return {
         label: "Nom de l'objet",
-        placeholder: "ordinateur, vélo, perceuse, etc.",
+        placeholder: "ordinateur, vélo, ....",
       };
     }
   };
